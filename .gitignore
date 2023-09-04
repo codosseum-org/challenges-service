@@ -1,3 +1,19 @@
+# SPDX-FileCopyrightText: Alex Wood
+# SPDX-License-Identifier: CC0-1.0
+Thumbs.db
+.DS_Store
+.gradle
+build/
+target/
+out/
+.idea
+*.iml
+*.ipr
+*.iws
+.project
+.settings
+.classpath
+.factorypath
 # Compiled class file
 *.class
 
