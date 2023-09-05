@@ -21,6 +21,10 @@ dependencies {
 	implementation(libs.bundles.exposed)
 }
 
+application {
+	mainClass.set("org.developerden.codosseum.ChallengesService")
+}
+
 ktor {
 	docker {
 		jreVersion.set(javaVersion)
