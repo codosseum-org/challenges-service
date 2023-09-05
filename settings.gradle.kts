@@ -9,7 +9,6 @@ dependencyResolutionManagement {
 			plugin("jvm", "org.jetbrains.kotlin.jvm").versionRef("kotlin")
 			plugin("serialization", "org.jetbrains.kotlin.plugin.serialization").versionRef("kotlin")
 			plugin("ktor", "io.ktor.plugin").versionRef("ktor")
-			plugin("application", "application")
 
 			version("coroutines", "1.7.3")
 			version("serialization", "1.6.0")
@@ -40,6 +39,24 @@ dependencyResolutionManagement {
 					"ktor.server.logging",
 				)
 			)
+
+			version("exposed", "0.43.0")
+
+			library("exposed-dao", "org.jetbrains.exposed", "exposed-dao").versionRef("exposed")
+			library("exposed-core", "org.jetbrains.exposed", "exposed-core").versionRef("exposed")
+			library("exposed-json", "org.jetbrains.exposed", "exposed-json").versionRef("exposed")
+			library("exposed-jdbc", "org.jetbrains.exposed", "exposed-jdbc").versionRef("exposed")
+			library("exposed-crypt", "org.jetbrains.exposed", "exposed-crypt").versionRef("exposed")
+			library("exposed-kotlin-datetime", "org.jetbrains.exposed", "exposed-kotlin-datetime").versionRef("exposed")
+
+			bundle("exposed", listOf(
+				"exposed-dao",
+				"exposed-core",
+				"exposed-json",
+				"exposed-jdbc",
+				"exposed-crypt",
+				"exposed-kotlin-datetime",
+			))
 
 			version("logback", "1.4.11")
 			version("kotlin-logging", "5.1.0")
