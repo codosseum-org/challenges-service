@@ -5,16 +5,11 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import kotlinx.coroutines.*
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import org.developerden.codosseum.config.ChallengesConfiguration
 import org.developerden.codosseum.files.trigger.GitFileUpdateTrigger
 import org.developerden.codosseum.files.trigger.LocalFileUpdateTrigger
-import org.developerden.codosseum.git.Repository
 import java.nio.file.Paths
 import kotlin.coroutines.CoroutineContext
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.seconds
 
 object ChallengesService : CoroutineScope {
 
@@ -24,8 +19,11 @@ object ChallengesService : CoroutineScope {
 		val config = ChallengesConfiguration.loadConfig()
 
 		logger.info { "Setting up local file updater." }
-		launch {
-			LocalFileUpdateTrigger(Paths.get(config.local)).setupTrigger()
+		config.locals.forEach {
+			logger.info { "Setting up $it updater." }
+			launch {
+				LocalFileUpdateTrigger(Paths.get(it)).setupTrigger()
+			}
 		}
 
 		logger.info { "Setting up git file updater. Checking all ${config.remoteUpdatePeriod}ms." }
