@@ -21,7 +21,13 @@ dependencyResolutionManagement {
 
 			library("kotlinx.coroutines", "org.jetbrains.kotlinx", "kotlinx-coroutines-core").versionRef("coroutines")
 
-			bundle("kotlinx", listOf("kotlinx.serialization", "kotlinx.coroutines"))
+			bundle(
+				"kotlinx",
+				listOf(
+					"kotlinx.serialization",
+					"kotlinx.coroutines"
+				)
+			)
 
 			library("ktor.server.cio", "io.ktor", "ktor-server-cio").withoutVersion()
 			library("ktor.server.core", "io.ktor", "ktor-server-core").withoutVersion()
@@ -39,6 +45,10 @@ dependencyResolutionManagement {
 					"ktor.server.logging",
 				)
 			)
+
+			library("kfswatch", "io.github.irgaly.kfswatch", "kfswatch").version("0.9.0")
+
+			library("jgit", "org.eclipse.jgit", "org.eclipse.jgit").version("6.6.1.202309021850-r")
 
 			version("logback", "1.4.11")
 			version("kotlin-logging", "5.1.0")

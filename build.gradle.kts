@@ -15,9 +15,13 @@ repositories {
 }
 
 dependencies {
+	implementation(libs.jgit)
+	implementation(libs.kfswatch)
 	implementation(libs.bundles.ktor)
 	implementation(libs.bundles.logging)
 	implementation(libs.bundles.kotlinx)
+
+	testImplementation(kotlin("test"))
 }
 
 application {
@@ -40,6 +44,10 @@ ktor {
 			)
 		)
 	}
+}
+
+tasks.test {
+	useJUnitPlatform()
 }
 
 kotlin {
