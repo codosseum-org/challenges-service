@@ -1,4 +1,4 @@
-package org.developerden.codosseum.git
+package org.developerden.codosseum.files.git
 
 import kotlinx.serialization.Serializable
 

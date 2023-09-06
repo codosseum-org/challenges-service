@@ -29,7 +29,7 @@ class LocalFileUpdateTrigger(val path: Path) : FileUpdateTrigger {
 			launch {
 				watcher.onEventFlow.collect {
 					val file = Paths.get(path.absolutePathString(), it.path)
-					ChallengesService.logger.debug { "Event: ${it.event.name} | Directory: ${file.isDirectory()} | File: /${file.absolutePathString()}" }
+					ChallengesService.logger.info { "Event: ${it.event.name} | Directory: ${file.isDirectory()} | File: /${file.absolutePathString()}" }
 					updater.trigger()
 				}
 			}

@@ -6,13 +6,8 @@ import org.developerden.codosseum.ChallengesService
 import org.developerden.codosseum.files.FileUpdateTrigger
 import org.developerden.codosseum.files.FileUpdater
 import org.developerden.codosseum.files.updater.GitFileUpdater
-import org.developerden.codosseum.git.Repository
-import java.util.*
+import org.developerden.codosseum.files.git.Repository
 import kotlin.concurrent.fixedRateTimer
-import kotlin.concurrent.scheduleAtFixedRate
-import kotlin.io.path.*
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
 
 class GitFileUpdateTrigger(
 	private val period: Long,
@@ -24,6 +19,7 @@ class GitFileUpdateTrigger(
 	override suspend fun setupTrigger() {
 		fixedRateTimer("${repository.owner}/${repository.name} updater", period = period) {
 			CoroutineScope(ChallengesService.coroutineContext).launch {
+				ChallengesService.logger.info { "Pulling repository ${repository.owner}/${repository.name}." }
 				updater.trigger()
 			}
 		}
