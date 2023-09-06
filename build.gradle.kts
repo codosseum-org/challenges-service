@@ -40,7 +40,8 @@ ktor {
 				DockerPortMapping(
 					80,
 					8080,
-					DockerPortMappingProtocol.TCP)
+					DockerPortMappingProtocol.TCP
+				)
 			)
 		)
 	}

@@ -1,12 +1,10 @@
 package org.developerden.codosseum.files.trigger
 
 import io.github.irgaly.kfswatch.KfsDirectoryWatcher
-import io.github.oshai.kotlinlogging.withLoggingContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.developerden.codosseum.ChallengesService
-import org.developerden.codosseum.config.ChallengesConfiguration
 import org.developerden.codosseum.files.FileUpdateTrigger
 import org.developerden.codosseum.files.updater.LocalFileUpdater
 import java.nio.file.Path
@@ -18,7 +16,7 @@ import kotlin.io.path.notExists
 
 class LocalFileUpdateTrigger(val path: Path) : FileUpdateTrigger {
 
-	override val updater = LocalFileUpdater(path.apply { if(notExists()) createDirectories() })
+	override val updater = LocalFileUpdater(path.apply { if (notExists()) createDirectories() })
 
 	override suspend fun setupTrigger() {
 		val watcher = KfsDirectoryWatcher(CoroutineScope(ChallengesService.coroutineContext))

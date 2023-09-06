@@ -2,7 +2,6 @@ package org.developerden.codosseum.files.updater
 
 import org.developerden.codosseum.files.FileUpdater
 import java.nio.file.Path
-import java.nio.file.Paths
 import kotlin.io.path.listDirectoryEntries
 
 class LocalFileUpdater(

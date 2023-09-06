@@ -5,8 +5,8 @@ import kotlinx.coroutines.launch
 import org.developerden.codosseum.ChallengesService
 import org.developerden.codosseum.files.FileUpdateTrigger
 import org.developerden.codosseum.files.FileUpdater
-import org.developerden.codosseum.files.updater.GitFileUpdater
 import org.developerden.codosseum.files.git.Repository
+import org.developerden.codosseum.files.updater.GitFileUpdater
 import kotlin.concurrent.fixedRateTimer
 
 class GitFileUpdateTrigger(

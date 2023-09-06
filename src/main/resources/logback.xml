@@ -1,7 +1,7 @@
 <configuration>
 
     <root level="INFO">
-        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="CONSOLE"/>
     </root>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -10,6 +10,6 @@
         </encoder>
     </appender>
 
-    <logger name="org.eclipse.jgit" level="OFF" />
+    <logger name="org.eclipse.jgit" level="OFF"/>
 
 </configuration>
