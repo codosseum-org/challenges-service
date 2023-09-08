@@ -10,13 +10,11 @@ import org.developerden.codosseum.files.updater.LocalFileUpdater
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.absolutePathString
-import kotlin.io.path.createDirectories
 import kotlin.io.path.isDirectory
-import kotlin.io.path.notExists
 
 class LocalFileUpdateTrigger(val path: Path) : FileUpdateTrigger {
 
-	override val updater = LocalFileUpdater(path.apply { if (notExists()) createDirectories() })
+	override val updater = LocalFileUpdater(path)
 
 	override suspend fun setupTrigger() {
 		val watcher = KfsDirectoryWatcher(CoroutineScope(ChallengesService.coroutineContext))
@@ -28,7 +26,6 @@ class LocalFileUpdateTrigger(val path: Path) : FileUpdateTrigger {
 				watcher.onEventFlow.collect {
 					val file = Paths.get(path.absolutePathString(), it.path)
 					ChallengesService.logger.info { "Event: ${it.event.name} | Directory: ${file.isDirectory()} | File: /${file.absolutePathString()}" }
-					updater.trigger()
 				}
 			}
 		}
