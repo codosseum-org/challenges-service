@@ -57,6 +57,9 @@ dependencyResolutionManagement {
 			library("logging.kotlin", "io.github.oshai", "kotlin-logging-jvm").versionRef("kotlin-logging")
 
 			bundle("logging", listOf("logging.logback", "logging.kotlin"))
+
+			library("schema", "net.pwall.json", "json-kotlin-schema").version("0.41")
+			library("kaml", "com.charleskorn.kaml", "kaml").version("0.55.0")
 		}
 	}
 }
