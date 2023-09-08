@@ -1,5 +1,6 @@
 package org.developerden.codosseum.files.updater
 
+import org.developerden.codosseum.ChallengesService
 import org.developerden.codosseum.files.FileUpdater
 import org.developerden.codosseum.files.git.Repository
 import org.eclipse.jgit.api.Git
@@ -22,7 +23,7 @@ class GitFileUpdater(
 			.apply { if (notExists()) createDirectories() }
 
 	@OptIn(ExperimentalPathApi::class)
-	override suspend fun trigger(): Collection<Path> {
+	override suspend fun trigger() {
 		temporaryFolder.deleteRecursively()
 
 		Git.cloneRepository()
@@ -40,13 +41,15 @@ class GitFileUpdater(
 			}
 			.call()
 
-		temporaryFolder.listDirectoryEntries().filter { it.name != "challenges" || !it.isDirectory() }
-			.forEach(Path::deleteRecursively)
+		temporaryFolder.listDirectoryEntries().filter {
+			!(it.name.contains("challenges") && it.isDirectory()) && !(it.name.contains("default-schema.json") && it.isRegularFile())
+		}.forEach {
+			ChallengesService.logger.info { "Deleting ${it.absolutePathString()}" }
+			it.deleteRecursively()
+		}
 
 		temporaryFolder.copyToRecursively(directory, followLinks = true, overwrite = true)
 
 		temporaryFolder.deleteRecursively()
-
-		return directory.listDirectoryEntries()
 	}
 }
