@@ -16,6 +16,8 @@ repositories {
 
 dependencies {
 	implementation(libs.jgit)
+	implementation(libs.kaml)
+	implementation(libs.schema)
 	implementation(libs.kfswatch)
 	implementation(libs.bundles.ktor)
 	implementation(libs.bundles.logging)
