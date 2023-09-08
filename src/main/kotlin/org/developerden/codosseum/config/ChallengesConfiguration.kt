@@ -9,11 +9,13 @@ import java.nio.file.Paths
 import kotlin.io.path.createFile
 import kotlin.io.path.inputStream
 import kotlin.io.path.notExists
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.DurationUnit
 
 @Serializable
 data class ChallengesConfiguration(
-	val locals: Collection<String>,
-	val remoteUpdatePeriod: Long,
+	val locals: Collection<String> = emptyList(),
+	val remoteUpdatePeriod: Long = 10.minutes.toLong(DurationUnit.MINUTES),
 	val repositories: Collection<Repository> = emptyList()
 ) {
 
