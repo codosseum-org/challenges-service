@@ -21,7 +21,13 @@ dependencyResolutionManagement {
 
 			library("kotlinx.coroutines", "org.jetbrains.kotlinx", "kotlinx-coroutines-core").versionRef("coroutines")
 
-			bundle("kotlinx", listOf("kotlinx.serialization", "kotlinx.coroutines"))
+			bundle(
+				"kotlinx",
+				listOf(
+					"kotlinx.serialization",
+					"kotlinx.coroutines"
+				)
+			)
 
 			library("ktor.server.cio", "io.ktor", "ktor-server-cio").withoutVersion()
 			library("ktor.server.core", "io.ktor", "ktor-server-core").withoutVersion()
@@ -40,23 +46,9 @@ dependencyResolutionManagement {
 				)
 			)
 
-			version("exposed", "0.43.0")
+			library("kfswatch", "io.github.irgaly.kfswatch", "kfswatch").version("0.9.0")
 
-			library("exposed-dao", "org.jetbrains.exposed", "exposed-dao").versionRef("exposed")
-			library("exposed-core", "org.jetbrains.exposed", "exposed-core").versionRef("exposed")
-			library("exposed-json", "org.jetbrains.exposed", "exposed-json").versionRef("exposed")
-			library("exposed-jdbc", "org.jetbrains.exposed", "exposed-jdbc").versionRef("exposed")
-			library("exposed-crypt", "org.jetbrains.exposed", "exposed-crypt").versionRef("exposed")
-			library("exposed-kotlin-datetime", "org.jetbrains.exposed", "exposed-kotlin-datetime").versionRef("exposed")
-
-			bundle("exposed", listOf(
-				"exposed-dao",
-				"exposed-core",
-				"exposed-json",
-				"exposed-jdbc",
-				"exposed-crypt",
-				"exposed-kotlin-datetime",
-			))
+			library("jgit", "org.eclipse.jgit", "org.eclipse.jgit").version("6.6.1.202309021850-r")
 
 			version("logback", "1.4.11")
 			version("kotlin-logging", "5.1.0")
@@ -65,6 +57,9 @@ dependencyResolutionManagement {
 			library("logging.kotlin", "io.github.oshai", "kotlin-logging-jvm").versionRef("kotlin-logging")
 
 			bundle("logging", listOf("logging.logback", "logging.kotlin"))
+
+			library("schema", "net.pwall.json", "json-kotlin-schema").version("0.41")
+			library("kaml", "com.charleskorn.kaml", "kaml").version("0.55.0")
 		}
 	}
 }

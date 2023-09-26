@@ -15,10 +15,15 @@ repositories {
 }
 
 dependencies {
+	implementation(libs.jgit)
+	implementation(libs.kaml)
+	implementation(libs.schema)
+	implementation(libs.kfswatch)
 	implementation(libs.bundles.ktor)
 	implementation(libs.bundles.logging)
 	implementation(libs.bundles.kotlinx)
-	implementation(libs.bundles.exposed)
+
+	testImplementation(kotlin("test"))
 }
 
 application {
@@ -37,10 +42,15 @@ ktor {
 				DockerPortMapping(
 					80,
 					8080,
-					DockerPortMappingProtocol.TCP)
+					DockerPortMappingProtocol.TCP
+				)
 			)
 		)
 	}
+}
+
+tasks.test {
+	useJUnitPlatform()
 }
 
 kotlin {
