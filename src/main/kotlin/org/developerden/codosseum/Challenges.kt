@@ -3,17 +3,25 @@ package org.developerden.codosseum
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.server.application.*
+import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
+import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.resources.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
+import net.pwall.json.schema.output.BasicErrorEntry
+import net.pwall.json.schema.output.BasicOutput
 import org.developerden.codosseum.config.ChallengesConfiguration
 import org.developerden.codosseum.files.StoredChallenges
 import org.developerden.codosseum.files.stored.GitStoredChallenges
 import org.developerden.codosseum.files.stored.LocalStoredChallenges
 import org.developerden.codosseum.files.trigger.GitFileUpdateTrigger
 import org.developerden.codosseum.files.trigger.LocalFileUpdateTrigger
+import org.developerden.codosseum.serializers.BasicErrorEntrySerializer
+import org.developerden.codosseum.serializers.BasicOutputSerializer
 import org.developerden.codosseum.server.routes.validate
 import java.nio.file.Paths
 import kotlin.coroutines.CoroutineContext
@@ -61,9 +69,20 @@ object ChallengesService : CoroutineScope {
 		get() = Dispatchers.Default + job
 }
 
+val json = Json {
+	serializersModule = SerializersModule {
+		contextual(BasicOutput::class, BasicOutputSerializer)
+		contextual(BasicErrorEntry::class, BasicErrorEntrySerializer)
+	}
+}
+
 fun ApplicationEngineEnvironmentBuilder.config() {
 	module {
+		install(ContentNegotiation) {
+			json
+		}
 		install(Resources)
+
 		routing {
 			validate()
 		}

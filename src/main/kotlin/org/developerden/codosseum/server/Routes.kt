@@ -6,5 +6,5 @@ import io.ktor.resources.*
 class Validate {
 
 	@Resource("/{title}")
-	class Title(val title: String)
+	class Title(val parent: Validate = Validate(), val title: String)
 }
