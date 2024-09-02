@@ -9,7 +9,6 @@ import java.nio.file.Paths
 import kotlin.io.path.absolute
 import kotlin.io.path.isDirectory
 import kotlin.io.path.listDirectoryEntries
-import kotlin.io.path.nameWithoutExtension
 
 class GitStoredChallenges(
 	val repository: Repository
