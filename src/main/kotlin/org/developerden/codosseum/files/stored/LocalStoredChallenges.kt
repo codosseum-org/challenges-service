@@ -1,7 +1,7 @@
 package org.developerden.codosseum.files.stored
 
-import org.developerden.codosseum.files.Challenge
 import org.developerden.codosseum.files.StoredChallenges
+import org.developerden.codosseum.model.Challenge
 import java.io.FileNotFoundException
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -28,5 +28,5 @@ class LocalStoredChallenges(
 				removeIf { it.name == schema.name }
 			}
 			?: emptyList())
-			.map { Challenge(it.name, it.resolve("challenge.yml")) }
+			.map(::loadChallenge)
 }

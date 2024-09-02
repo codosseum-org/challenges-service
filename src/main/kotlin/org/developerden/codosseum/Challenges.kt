@@ -11,12 +11,14 @@ import io.ktor.server.resources.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.*
 import org.developerden.codosseum.config.ChallengesConfiguration
-import org.developerden.codosseum.files.Challenge
+
 import org.developerden.codosseum.files.StoredChallenges
 import org.developerden.codosseum.files.stored.GitStoredChallenges
 import org.developerden.codosseum.files.stored.LocalStoredChallenges
 import org.developerden.codosseum.files.trigger.GitFileUpdateTrigger
 import org.developerden.codosseum.files.trigger.LocalFileUpdateTrigger
+import org.developerden.codosseum.model.Challenge
+import org.developerden.codosseum.server.routes.getRandomChallenge
 import org.developerden.codosseum.server.routes.validate
 import java.nio.file.Paths
 import kotlin.coroutines.CoroutineContext
@@ -25,7 +27,10 @@ object ChallengesService : CoroutineScope {
 
 	val logger: KLogger by lazy { KotlinLogging.logger("challenges-service") }
 
-	val storedChallenges: MutableList<StoredChallenges> by lazy { mutableListOf() }
+	private val storedChallenges: MutableList<StoredChallenges> by lazy { mutableListOf() }
+
+	val challenges: List<Challenge>
+		get() = storedChallenges.flatMap { it.challenges }
 
 	fun findChallenge(name: String): Pair<StoredChallenges, Challenge>? {
 		storedChallenges.forEach { stored ->
@@ -84,6 +89,7 @@ fun ApplicationEngineEnvironmentBuilder.config() {
 
 		routing {
 			validate()
+			getRandomChallenge()
 		}
 	}
 

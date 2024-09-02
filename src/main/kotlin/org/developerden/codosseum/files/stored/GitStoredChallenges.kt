@@ -1,8 +1,8 @@
 package org.developerden.codosseum.files.stored
 
-import org.developerden.codosseum.files.Challenge
 import org.developerden.codosseum.files.StoredChallenges
 import org.developerden.codosseum.files.git.Repository
+import org.developerden.codosseum.model.Challenge
 import java.io.FileNotFoundException
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -27,5 +27,5 @@ class GitStoredChallenges(
 			.listDirectoryEntries()
 			.toMutableList()
 			.apply { removeIf { !it.isDirectory() || it.absolute() == schema.absolute() } }
-			.map { Challenge(it.nameWithoutExtension, it.resolve("challenge.yml")) }
+			.map(::loadChallenge)
 }

@@ -1,13 +1,15 @@
-package org.developerden.codosseum.files
+package org.developerden.codosseum.model
 
 import java.nio.file.Path
 import kotlin.io.path.inputStream
-import kotlin.io.path.readText
 
 data class Challenge(
+	/**
+	 * Internal name/id of the challenge
+	 */
 	val name: String,
+	val info: ChallengeInfo,
 	private val path: Path
 ) {
 	val inputStream get() = path.inputStream()
-	val content get() = path.readText()
 }

@@ -7,7 +7,7 @@ import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.*
-import org.developerden.codosseum.files.Challenge
+import org.developerden.codosseum.model.Challenge
 import org.developerden.codosseum.serializers.ValidationErrorSerializer
 
 fun validate(schema: String, challenge: Challenge): ValidationOutput {

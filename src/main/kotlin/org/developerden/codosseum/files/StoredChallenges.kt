@@ -1,5 +1,6 @@
 package org.developerden.codosseum.files
 
+import org.developerden.codosseum.model.Challenge
 import org.developerden.codosseum.validation.ValidationOutput
 import org.developerden.codosseum.validation.ValidationResult
 import org.developerden.codosseum.validation.validate
