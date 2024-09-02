@@ -74,11 +74,6 @@ object ChallengesService : CoroutineScope {
 		get() = Dispatchers.Default + job
 }
 
-//val json = Json {
-//	prettyPrint = true
-//	serializersModule = SerializersModule {
-//	}
-//}
 
 fun ApplicationEngineEnvironmentBuilder.config() {
 	module {
