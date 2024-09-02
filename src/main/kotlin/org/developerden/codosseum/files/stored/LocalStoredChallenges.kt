@@ -1,10 +1,11 @@
 package org.developerden.codosseum.files.stored
 
+import org.developerden.codosseum.files.Challenge
 import org.developerden.codosseum.files.StoredChallenges
 import java.io.FileNotFoundException
 import java.nio.file.Path
 import java.nio.file.Paths
-import kotlin.io.path.absolute
+import kotlin.io.path.isDirectory
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
 
@@ -18,9 +19,14 @@ class LocalStoredChallenges(
 				?: throw FileNotFoundException("Could not find default schema in resources.")
 		)
 
-	override val challenges: Collection<Path>
-		get() = Paths.get("$local/", "challenges/").listDirectoryEntries().toMutableList()
-			.apply {
+	override val challenges: Collection<Challenge>
+		get() = (Paths.get("$local/", "challenges/")
+			.takeIf { it.isDirectory() }
+			?.listDirectoryEntries()
+			?.toMutableList()
+			?.apply {
 				removeIf { it.name == schema.name }
 			}
+			?: emptyList())
+			.map { Challenge(it.name, it.resolve("challenge.yml")) }
 }

@@ -11,16 +11,13 @@ import io.ktor.server.routing.*
 import kotlinx.coroutines.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
-import net.pwall.json.schema.output.BasicErrorEntry
-import net.pwall.json.schema.output.BasicOutput
 import org.developerden.codosseum.config.ChallengesConfiguration
+import org.developerden.codosseum.files.Challenge
 import org.developerden.codosseum.files.StoredChallenges
 import org.developerden.codosseum.files.stored.GitStoredChallenges
 import org.developerden.codosseum.files.stored.LocalStoredChallenges
 import org.developerden.codosseum.files.trigger.GitFileUpdateTrigger
 import org.developerden.codosseum.files.trigger.LocalFileUpdateTrigger
-import org.developerden.codosseum.serializers.BasicErrorEntrySerializer
-import org.developerden.codosseum.serializers.BasicOutputSerializer
 import org.developerden.codosseum.server.routes.validate
 import java.nio.file.Paths
 import kotlin.coroutines.CoroutineContext
@@ -30,6 +27,16 @@ object ChallengesService : CoroutineScope {
 	val logger: KLogger by lazy { KotlinLogging.logger("challenges-service") }
 
 	val storedChallenges: MutableList<StoredChallenges> by lazy { mutableListOf() }
+
+	fun findChallenge(name: String): Pair<StoredChallenges, Challenge>? {
+		storedChallenges.forEach { stored ->
+			val challenge = stored.findChallenge(name)
+			if (challenge != null) {
+				return Pair(stored, challenge)
+			}
+		}
+		return null
+	}
 
 	suspend fun startup(): Unit = coroutineScope {
 		val config = ChallengesConfiguration.loadConfig()
@@ -70,8 +77,6 @@ object ChallengesService : CoroutineScope {
 
 val json = Json {
 	serializersModule = SerializersModule {
-		contextual(BasicOutput::class, BasicOutputSerializer)
-		contextual(BasicErrorEntry::class, BasicErrorEntrySerializer)
 	}
 }
 

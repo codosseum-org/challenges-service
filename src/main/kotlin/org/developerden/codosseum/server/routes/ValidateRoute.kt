@@ -13,13 +13,14 @@ import org.developerden.codosseum.server.Validate
 fun Routing.validate() {
 	get<Validate.Title> { route ->
 		ChallengesService.logger.info { "Validating challenge ${route.title}" }
-		val stored = ChallengesService.storedChallenges.firstOrNull { it.findChallenge(route.title) != null }
+		val found = ChallengesService.findChallenge(route.title)
 
-		if (stored == null) {
+		if (found == null) {
 			call.respond(HttpStatusCode.NotFound)
 			return@get
 		}
+		val (stored, challenge) = found
 
-		call.respond(Json.encodeToString(stored.validateChallenge(route.title)))
+		call.respond(Json.encodeToString(stored.validateChallenge(challenge)))
 	}
 }

@@ -3,7 +3,7 @@ rootProject.name = "challenges-service"
 dependencyResolutionManagement {
 	versionCatalogs {
 		create("libs") {
-			version("kotlin", "1.9.10")
+			version("kotlin", "2.0.20")
 			version("ktor", "2.3.4")
 
 			plugin("jvm", "org.jetbrains.kotlin.jvm").versionRef("kotlin")
@@ -58,7 +58,8 @@ dependencyResolutionManagement {
 
 			bundle("logging", listOf("logging.logback", "logging.kotlin"))
 
-			library("schema", "net.pwall.json", "json-kotlin-schema").version("0.41")
+			library("schema", "io.github.optimumcode", "json-schema-validator").version("0.2.3")
+			library("snakeyaml", "it.krzeminski", "snakeyaml-engine-kmp").version("3.0.2")
 			library("kaml", "com.charleskorn.kaml", "kaml").version("0.55.0")
 		}
 	}

@@ -1,24 +1,50 @@
 package org.developerden.codosseum.validation
 
-import com.charleskorn.kaml.Yaml
-import com.charleskorn.kaml.YamlNode
-import com.charleskorn.kaml.yamlMap
+import io.github.optimumcode.json.schema.JsonSchema
+import io.github.optimumcode.json.schema.ValidationError
+import io.ktor.util.*
+import it.krzeminski.snakeyaml.engine.kmp.api.Load
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonObject
-import net.pwall.json.schema.JSONSchema
-import net.pwall.json.schema.output.BasicOutput
-import org.developerden.codosseum.serializers.BasicOutputSerializer
-import java.nio.file.Path
+import kotlinx.serialization.json.*
+import org.developerden.codosseum.files.Challenge
+import org.developerden.codosseum.serializers.ValidationErrorSerializer
 
-fun validate(schema: String, yaml: String): BasicOutput =
-	JSONSchema.parse(schema).validateBasic(Json.encodeToString(Yaml.default.parseToYamlNode(yaml).yamlMap.entries))
+fun validate(schema: String, challenge: Challenge): ValidationOutput {
+	val x = Load().loadOne(challenge.inputStream).toJsonElement()
+
+	val loader = JsonSchema.fromDefinition(schema)
+
+	val errors = mutableListOf<ValidationError>()
+
+	val success = loader.validate(x, errors::add)
+
+	return ValidationOutput(success, errors.toList())
+}
+
+private fun Any?.toJsonElement(): JsonElement {
+	return when (this) {
+		is Map<*, *> -> JsonObject(entries.associate { (key, value) -> "$key" to value.toJsonElement() })
+		is List<*> -> JsonArray(map { it.toJsonElement() })
+		is Set<*> -> JsonArray(map { it.toJsonElement() })
+		is Boolean -> JsonPrimitive(this)
+		is Number -> JsonPrimitive(this)
+		is String -> JsonPrimitive(this)
+		is ByteArray -> JsonPrimitive(encodeBase64())
+		null -> JsonNull
+		else -> error("Unexpected type: ${this::class.qualifiedName}")
+	}
+}
+
+@Serializable
+data class ValidationOutput(
+	val success: Boolean,
+	val errors: List<@Serializable(with = ValidationErrorSerializer::class) ValidationError>
+)
 
 @Serializable
 data class ValidationResult(
 	val challengeName: String,
-	val output: @Serializable(with = BasicOutputSerializer::class) BasicOutput
+	val output: @Contextual ValidationOutput
 )
+
