@@ -9,12 +9,10 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.developerden.codosseum.ChallengesService
 import org.developerden.codosseum.server.Validate
-import kotlin.io.path.absolutePathString
-import kotlin.io.path.name
-import kotlin.io.path.nameWithoutExtension
 
 fun Routing.validate() {
 	get<Validate.Title> { route ->
+		ChallengesService.logger.info { "Validating challenge ${route.title}" }
 		val stored = ChallengesService.storedChallenges.firstOrNull { it.findChallenge(route.title) != null }
 
 		if (stored == null) {
