@@ -4,14 +4,14 @@ dependencyResolutionManagement {
 	versionCatalogs {
 		create("libs") {
 			version("kotlin", "2.0.20")
-			version("ktor", "2.3.4")
+			version("ktor", "2.3.12")
 
 			plugin("jvm", "org.jetbrains.kotlin.jvm").versionRef("kotlin")
 			plugin("serialization", "org.jetbrains.kotlin.plugin.serialization").versionRef("kotlin")
 			plugin("ktor", "io.ktor.plugin").versionRef("ktor")
 
-			version("coroutines", "1.7.3")
-			version("serialization", "1.6.0")
+			version("coroutines", "1.9.0-RC.2")
+			version("serialization", "1.7.2")
 
 			library(
 				"kotlinx.serialization",
@@ -34,6 +34,7 @@ dependencyResolutionManagement {
 			library("ktor.server.resources", "io.ktor", "ktor-server-resources").withoutVersion()
 			library("ktor.server.negotiation", "io.ktor", "ktor-server-content-negotiation").withoutVersion()
 			library("ktor.server.logging", "io.ktor", "ktor-server-call-logging").withoutVersion()
+			library("ktor.serialization-json", "io.ktor", "ktor-serialization-kotlinx-json").withoutVersion()
 
 			bundle(
 				"ktor",
@@ -43,6 +44,7 @@ dependencyResolutionManagement {
 					"ktor.server.resources",
 					"ktor.server.negotiation",
 					"ktor.server.logging",
+					"ktor.serialization-json"
 				)
 			)
 
