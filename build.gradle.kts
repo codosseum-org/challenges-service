@@ -5,6 +5,7 @@ plugins {
 	alias(libs.plugins.jvm)
 	alias(libs.plugins.ktor)
 	alias(libs.plugins.serialization)
+	checkstyle
 }
 
 version = "0.1-b"
