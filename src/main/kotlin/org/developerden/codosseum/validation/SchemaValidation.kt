@@ -4,7 +4,6 @@ import io.github.optimumcode.json.schema.JsonSchema
 import io.github.optimumcode.json.schema.ValidationError
 import io.ktor.util.*
 import it.krzeminski.snakeyaml.engine.kmp.api.Load
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.*
 import org.developerden.codosseum.model.Challenge
@@ -46,6 +45,6 @@ data class ChallengeSchemaValidationOutput(
 data class ValidationResult(
 	val challengeName: String,
 	val schemaValidation: ChallengeSchemaValidationOutput,
-	val solutionValidation:SolutionValidationResult
+	val solutionValidation: SolutionValidationResult
 )
 

@@ -55,19 +55,6 @@ data class FailedTest(
 	val stderr: String = ""
 )
 
-suspend fun validateCode(language: String, code: String) {
-
-	val body = ProgramsApi().run(
-		BuildRunRequest(
-			BuildRunRequestBuild(
-				language,
-				BuildRequestMainFile(code)
-			)
-		)
-	).body()
-
-	println(body)
-}
 
 inline fun <T, R> Flow<T>.concurrentMap(crossinline transform: suspend (T) -> R): Flow<R> = channelFlow {
 	collect {
