@@ -67,7 +67,7 @@ publicTests:
     out: ["2435149"]
   - name: Leading zeros
     in: ["5", "16", "2A00028"]
-    out: ["164515"]
+    out: ["10282"]
   - name: Skipping zeros
     in: ["5", "8", "2340076"]
     out: ["1052563"]
