@@ -30,10 +30,13 @@ suspend fun validateSolutions(api: ProgramsApi, challenge: Challenge): SolutionV
 			it to body
 		}.toSet().toMap()
 
-	val success = results.all { (k, v) -> v.stdout == k.output.joinToString("\n") }
-	val failed = results.filterNot { (k, v) -> v.stdout == k.output.joinToString("\n") }.map { (k, v) ->
-		FailedTest(k.name, k.output.joinToString("\n"), v.stdout, v.stderr)
-	}.toSet()
+
+	val failed = results
+		.filterNot { (k, v) -> v.stdout.trim() == k.output.joinToString("\n") }
+		.map { (k, v) ->
+			FailedTest(k.name, k.output.joinToString("\n"), v.stdout.trim(), v.stderr)
+		}.toSet()
+	val success = failed.isEmpty()
 	return SolutionValidationResult(challenge.info.title, success, failed)
 }
 
