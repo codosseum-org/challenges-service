@@ -1,0 +1,1434 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Sandkasten",
+    "description": "[![GitHub](https://img.shields.io/static/v1?label=GitHub&message=Defelo/sandkasten&style=for-the-badge&logo=github)](https://github.com/Defelo/sandkasten)\n[![GitHub](https://img.shields.io/github/stars/Defelo/sandkasten?style=for-the-badge&logo=github)](https://github.com/Defelo/sandkasten)\n[![GitHub](https://img.shields.io/github/forks/Defelo/sandkasten?style=for-the-badge&logo=github)](https://github.com/Defelo/sandkasten)\n[![GitHub](https://img.shields.io/github/license/Defelo/sandkasten?style=for-the-badge)](https://github.com/Defelo/sandkasten)\n[![GitHub](https://img.shields.io/static/v1?label=OpenAPI%20Spec&message=/openapi.json&style=for-the-badge&logo=openapiinitiative)](openapi.json)\n\n## What is this?\nSandkasten is a code execution engine for running arbitrary untrusted/harmful code in a sandbox,\nisolating it from both the host system and other Sandkasten jobs. A simple REST API allows uploading\nand executing arbitrary programs, while also enabling the user to specify resource limits and\nproviding feedback on the actual resources used. This project was partly inspired by\n[Piston](https://github.com/engineer-man/piston) and aims to solve some problems with it.\n\n## Features\n- Compile and execute arbitrary programs.\n- Cache compilation results to avoid having to recompile the same programs for every time they\n  are run.\n- Set resource limits for both compile and run steps.\n- Report resource usage for both compile and run steps.\n- Packages are defined using [Nix](https://nixos.org/).\n- Programs are deleted automatically if they are not executed anymore.\n- Specify stdin, command line arguments and files in the working directory for run steps.\n- Specify environment variables for both compile and run steps.\n- Client library for Rust ([crate](https://crates.io/crates/sandkasten-client), [documentation](https://docs.rs/sandkasten-client))\n\n## API Documentation\nThe API documentation is available on [`/docs`](docs) and [`/redoc`](/redoc). There is also an\nOpenAPI specification available on [`/openapi.json`](openapi.json).\n",
+    "version": "0.2.2"
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Configuration"
+    },
+    {
+      "name": "Environments"
+    },
+    {
+      "name": "Programs"
+    }
+  ],
+  "paths": {
+    "/config": {
+      "get": {
+        "tags": [
+          "Configuration"
+        ],
+        "summary": "Return the public configuration of Sandkasten.",
+        "responses": {
+          "200": {
+            "description": " The public configuration of Sandkasten.\n",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicConfig"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/environments": {
+      "get": {
+        "tags": [
+          "Environments"
+        ],
+        "summary": "Return a map of all environments.",
+        "description": "The keys represent the environment ids and the values contain additional\ninformation about the environments.",
+        "responses": {
+          "200": {
+            "description": " Map of available environments.\n",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "type": "object",
+                  "title": "A map of environments where the key represents the id of the environment.",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/Environment"
+                  },
+                  "example": {
+                    "python": {
+                      "default_main_file_name": "code.py",
+                      "example": "name = input()\nprint(f\"Hello, {name}!\")",
+                      "meta": {
+                        "packages": [
+                          "numpy",
+                          "pandas"
+                        ]
+                      },
+                      "name": "Python",
+                      "version": "3.11.1"
+                    },
+                    "rust": {
+                      "default_main_file_name": "code.rs",
+                      "example": null,
+                      "meta": {
+                        "homepage": "https://www.rust-lang.org/"
+                      },
+                      "name": "Rust",
+                      "version": "1.64.0"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/environments/{name}/resource_usage": {
+      "get": {
+        "tags": [
+          "Environments"
+        ],
+        "summary": "Return the base resource usage of an environment.",
+        "description": "The base resource usage of an environment is measured by benchmarking a\nvery simple program in this environment that barely does anything. Note\nthat the compile step is run only once as recompiling the same program\nagain and again would take too much time in most cases.",
+        "parameters": [
+          {
+            "name": "name",
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "required": true,
+            "deprecated": false,
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": " Base resource usage of build and run step.\n",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResourceUsage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": " Environment does not exist.\n",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/__GetBaseResourceUsage__EnvironmentNotFound"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/run": {
+      "post": {
+        "tags": [
+          "Programs"
+        ],
+        "operationId": "run",
+        "summary": "Build and immediately run a program.",
+        "requestBody": {
+          "content": {
+            "application/json; charset=utf-8": {
+              "schema": {
+                "$ref": "#/components/schemas/BuildRunRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "404": {
+            "description": " Environment does not exist.\n",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/__BuildRun__EnvironmentNotFound"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": " Code has been executed successfully.\n",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuildRunResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "There are multiple possible responses with this status code:\n-  Code could not be compiled.\n\n-  File names are not unique.\n\n-  Environment variable names are not valid.\n\n-  The specified compile limits are too high.\n\n-  The specified run limits are too high.\n",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/__BuildRun__CompileError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/__BuildRun__InvalidFileNames"
+                    },
+                    {
+                      "$ref": "#/components/schemas/__BuildRun__InvalidEnvVars"
+                    },
+                    {
+                      "$ref": "#/components/schemas/__BuildRun__CompileLimitsExceeded"
+                    },
+                    {
+                      "$ref": "#/components/schemas/__BuildRun__RunLimitsExceeded"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/programs": {
+      "post": {
+        "tags": [
+          "Programs"
+        ],
+        "summary": "Upload and compile a program.",
+        "operationId": "compile",
+        "requestBody": {
+          "content": {
+            "application/json; charset=utf-8": {
+              "schema": {
+                "$ref": "#/components/schemas/BuildRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": " Program has been built successfully.\n",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuildResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "There are multiple possible responses with this status code:\n-  Code could not be compiled.\n\n-  File names are not unique.\n\n-  Environment variable names are not valid.\n\n-  The specified compile limits are too high.\n",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/__Build__CompileError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/__Build__InvalidFileNames"
+                    },
+                    {
+                      "$ref": "#/components/schemas/__Build__InvalidEnvVars"
+                    },
+                    {
+                      "$ref": "#/components/schemas/__Build__CompileLimitsExceeded"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": " Environment does not exist.\n",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/__Build__EnvironmentNotFound"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/programs/{program_id}/run": {
+      "post": {
+        "tags": [
+          "Programs"
+        ],
+        "summary": "Run a program that has previously been built.",
+        "operationId": "runProgram",
+        "parameters": [
+          {
+            "name": "program_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "in": "path",
+            "required": true,
+            "deprecated": false,
+            "explode": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json; charset=utf-8": {
+              "schema": {
+                "$ref": "#/components/schemas/RunRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "404": {
+            "description": " Program does not exist.\n",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/__Run__ProgramNotFound"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "There are multiple possible responses with this status code:\n-  File names are not unique.\n\n-  Environment variable names are not valid.\n\n-  The specified run limits are too high.\n",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/__Run__InvalidFileNames"
+                    },
+                    {
+                      "$ref": "#/components/schemas/__Run__InvalidEnvVars"
+                    },
+                    {
+                      "$ref": "#/components/schemas/__Run__RunLimitsExceeded"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "200": {
+            "description": " Code has been executed successfully.\n",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json; charset=utf-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BadRequestError": {
+        "type": "object",
+        "required": [
+          "error",
+          "reason"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "unprocessable_content",
+            "readOnly": true
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "BaseResourceUsage": {
+        "type": "object",
+        "description": "The base resource usage of an environment.",
+        "required": [
+          "run"
+        ],
+        "properties": {
+          "build": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ResourceUsage"
+              },
+              {
+                "description": "The base resource usage of the build step."
+              }
+            ]
+          },
+          "run": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RunResourceUsage"
+              },
+              {
+                "description": "The base resource usage of the run step."
+              }
+            ]
+          }
+        }
+      },
+      "BenchmarkResult": {
+        "type": "object",
+        "description": "Accumulated benchmark results.",
+        "required": [
+          "min",
+          "avg",
+          "max"
+        ],
+        "properties": {
+          "min": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The minimum of the measured values."
+          },
+          "avg": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The average of the measured values."
+          },
+          "max": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The maximum of the measured values."
+          }
+        }
+      },
+      "BuildRequest": {
+        "type": "object",
+        "description": "The request data for building a program.",
+        "required": [
+          "environment",
+          "main_file"
+        ],
+        "properties": {
+          "environment": {
+            "type": "string",
+            "description": "The environment to use for building and running the program."
+          },
+          "main_file": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MainFile"
+              },
+              {
+                "description": "The main source file that represents the entrypoint to the program."
+              }
+            ]
+          },
+          "files": {
+            "type": "array",
+            "description": "A list of additional source files.",
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/SKFile"
+            },
+            "maxItems": 10
+          },
+          "env_vars": {
+            "type": "array",
+            "description": "A list of environment variables to set during the build step.",
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/EnvVar"
+            },
+            "maxItems": 16
+          },
+          "compile_limits": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LimitsOpt"
+              },
+              {
+                "description": "Limits to set on the compilation process.",
+                "default": {
+                  "cpus": null,
+                  "file_descriptors": null,
+                  "filesize": null,
+                  "memory": null,
+                  "network": null,
+                  "processes": null,
+                  "stderr_max_size": null,
+                  "stdout_max_size": null,
+                  "time": null,
+                  "tmpfs": null
+                }
+              }
+            ]
+          }
+        }
+      },
+      "BuildResult": {
+        "type": "object",
+        "description": "The results of building a program.",
+        "required": [
+          "program_id",
+          "ttl",
+          "cached"
+        ],
+        "properties": {
+          "program_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "A unique identifier of the program that was built."
+          },
+          "ttl": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The number of seconds after the last execution of the program before it\nis removed."
+          },
+          "cached": {
+            "type": "boolean",
+            "description": "Whether the program has already been built before."
+          },
+          "compile_result": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RunResult"
+              },
+              {
+                "description": "The results of compiling the program. Empty iff programs don't need to\nbe compiled in this environment."
+              }
+            ]
+          }
+        }
+      },
+      "BuildRunRequest": {
+        "type": "object",
+        "description": "The request data for building and running a program.",
+        "required": [
+          "build"
+        ],
+        "properties": {
+          "build": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BuildRequest"
+              },
+              {
+                "description": "The data for the build step."
+              }
+            ]
+          },
+          "run": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RunRequest"
+              },
+              {
+                "description": "The data for the run step.",
+                "default": {
+                  "args": [],
+                  "env_vars": [],
+                  "files": [],
+                  "run_limits": {
+                    "cpus": null,
+                    "file_descriptors": null,
+                    "filesize": null,
+                    "memory": null,
+                    "network": null,
+                    "processes": null,
+                    "stderr_max_size": null,
+                    "stdout_max_size": null,
+                    "time": null,
+                    "tmpfs": null
+                  },
+                  "stdin": null
+                }
+              }
+            ]
+          }
+        }
+      },
+      "BuildRunResult": {
+        "type": "object",
+        "description": "The results of building and running a program.",
+        "required": [
+          "program_id",
+          "ttl",
+          "cached",
+          "run"
+        ],
+        "properties": {
+          "program_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "A unique identifier of the program that was built."
+          },
+          "ttl": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The number of seconds after the last execution of the program before it\nis removed."
+          },
+          "cached": {
+            "type": "boolean",
+            "description": "Whether the program has already been built before."
+          },
+          "build": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RunResult"
+              },
+              {
+                "description": "The results of compiling the program. Empty iff programs don't need to\nbe compiled in this environment."
+              }
+            ]
+          },
+          "run": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RunResult"
+              },
+              {
+                "description": "The results of running the program."
+              }
+            ]
+          }
+        }
+      },
+      "EnvVar": {
+        "type": "object",
+        "description": "An environment variable that is set for the build/run process.",
+        "required": [
+          "name",
+          "value"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the environment variable.",
+            "pattern": "^[a-zA-Z0-9_]{1,64}$"
+          },
+          "value": {
+            "type": "string",
+            "description": "The value of the environment variable.",
+            "pattern": "^[^\u0000]{0,256}$"
+          }
+        }
+      },
+      "Environment": {
+        "type": "object",
+        "description": "A package that can build and run programs.",
+        "required": [
+          "name",
+          "version",
+          "default_main_file_name",
+          "meta"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The display name of the environment (e.g. `Rust` or `C++`)."
+          },
+          "version": {
+            "type": "string",
+            "description": "The version of the environment."
+          },
+          "default_main_file_name": {
+            "type": "string",
+            "description": "The default name of the main file that is used if no filename is\nspecified."
+          },
+          "example": {
+            "type": "string",
+            "description": "An example program for this environment."
+          },
+          "meta": {
+            "description": "Additional metadata specific to the environment."
+          }
+        }
+      },
+      "SKFile": {
+        "type": "object",
+        "description": "A file that is put in the working directory of the build/run process.",
+        "required": [
+          "name",
+          "content"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the file.",
+            "pattern": "^[a-zA-Z0-9._-]{1,32}$"
+          },
+          "content": {
+            "type": "string",
+            "description": "The content of the file.",
+            "maxLength": 65536
+          }
+        }
+      },
+      "InternalServerError": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "internal_server_error",
+            "readOnly": true
+          }
+        }
+      },
+      "LimitExceeded": {
+        "type": "object",
+        "description": "Information about a build/run limit that has been exceeded.",
+        "required": [
+          "name",
+          "max_value"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the limit."
+          },
+          "max_value": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The maximum value that is allowed for this limit."
+          }
+        }
+      },
+      "Limits": {
+        "type": "object",
+        "description": "The resource limits of a process.",
+        "required": [
+          "cpus",
+          "time",
+          "memory",
+          "tmpfs",
+          "filesize",
+          "file_descriptors",
+          "processes",
+          "stdout_max_size",
+          "stderr_max_size",
+          "network"
+        ],
+        "properties": {
+          "cpus": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The maximum number of cpus the process is allowed to use."
+          },
+          "time": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The number of **seconds** the process is allowed to run."
+          },
+          "memory": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The amount of memory the process is allowed to use (in **MB**)."
+          },
+          "tmpfs": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The size of the tmpfs mounted at /tmp (in **MB**)."
+          },
+          "filesize": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The maximum size of a file the process is allowed to create (in **MB**)."
+          },
+          "file_descriptors": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The maximum number of file descripters the process can open at the same time."
+          },
+          "processes": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The maximum number of processes that can run concurrently in the sandbox."
+          },
+          "stdout_max_size": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The maximum number of bytes that are read from stdout."
+          },
+          "stderr_max_size": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The maximum number of bytes that are read from stderr."
+          },
+          "network": {
+            "type": "boolean",
+            "description": "Whether the process is allowed to access the network."
+          }
+        }
+      },
+      "LimitsOpt": {
+        "type": "object",
+        "description": "The resource limits of a process. Omit a value to use the default limit.",
+        "properties": {
+          "cpus": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The maximum number of cpus the process is allowed to use.",
+            "minimum": 1.0
+          },
+          "time": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The number of **seconds** the process is allowed to run.",
+            "minimum": 1.0
+          },
+          "memory": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The amount of memory the process is allowed to use (in **MB**).",
+            "minimum": 1.0
+          },
+          "tmpfs": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The size of the tmpfs mounted at /tmp (in **MB**)."
+          },
+          "filesize": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The maximum size of a file the process is allowed to create (in **MB**).",
+            "minimum": 1.0
+          },
+          "file_descriptors": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The maximum number of file descripters the process can open at the same time.",
+            "minimum": 1.0
+          },
+          "processes": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The maximum number of processes that can run concurrently in the sandbox.",
+            "minimum": 1.0
+          },
+          "stdout_max_size": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The maximum number of bytes that are read from stdout."
+          },
+          "stderr_max_size": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The maximum number of bytes that are read from stderr."
+          },
+          "network": {
+            "type": "boolean",
+            "description": "Whether the process is allowed to access the network."
+          }
+        }
+      },
+      "MainFile": {
+        "type": "object",
+        "description": "The main source file that is put in the working directory of the build\nprocess.",
+        "required": [
+          "content"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the file. If omitted, a default name is chosen based on the\nselected environment.",
+            "default": null,
+            "pattern": "^[a-zA-Z0-9._-]{1,32}$"
+          },
+          "content": {
+            "type": "string",
+            "description": "The content of the file.",
+            "maxLength": 65536
+          }
+        }
+      },
+      "PublicConfig": {
+        "type": "object",
+        "description": "The public configuration of Sandkasten.",
+        "required": [
+          "program_ttl",
+          "max_concurrent_jobs",
+          "compile_limits",
+          "run_limits",
+          "base_resource_usage_runs"
+        ],
+        "properties": {
+          "program_ttl": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The time to live for programs in seconds."
+          },
+          "max_concurrent_jobs": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The maximum number of jobs that can run at the same time."
+          },
+          "compile_limits": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Limits"
+              },
+              {
+                "description": "The maximum allowed limits for compile steps."
+              }
+            ]
+          },
+          "run_limits": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Limits"
+              },
+              {
+                "description": "The maximum allowed limits for run steps."
+              }
+            ]
+          },
+          "base_resource_usage_runs": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The number of times the program is run when measuring the base resource\nusage of an environment."
+          }
+        }
+      },
+      "ResourceUsage": {
+        "type": "object",
+        "description": "The amount of resources a process used.",
+        "required": [
+          "time",
+          "memory"
+        ],
+        "properties": {
+          "time": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The number of **milliseconds** the process ran."
+          },
+          "memory": {
+            "type": "integer",
+            "format": "uint64",
+            "description": "The amount of memory the process used (in **KB**)"
+          }
+        }
+      },
+      "RunRequest": {
+        "type": "object",
+        "description": "The request data for running a program.",
+        "properties": {
+          "stdin": {
+            "type": "string",
+            "description": "The stdin input the process reads.",
+            "default": null,
+            "maxLength": 65536
+          },
+          "args": {
+            "type": "array",
+            "description": "A list of command line arguments that are passed to the process.",
+            "default": [],
+            "items": {
+              "type": "string",
+              "pattern": "^[^\u0000]{0,4096}$"
+            },
+            "maxItems": 100
+          },
+          "files": {
+            "type": "array",
+            "description": "A list of additional files that are put in the working directory of the\nprocess.",
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/SKFile"
+            },
+            "maxItems": 10
+          },
+          "env_vars": {
+            "type": "array",
+            "description": "A list of environment variables to set during the run step.",
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/EnvVar"
+            },
+            "maxItems": 16
+          },
+          "run_limits": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LimitsOpt"
+              },
+              {
+                "description": "Limits to set on the process.",
+                "default": {
+                  "cpus": null,
+                  "file_descriptors": null,
+                  "filesize": null,
+                  "memory": null,
+                  "network": null,
+                  "processes": null,
+                  "stderr_max_size": null,
+                  "stdout_max_size": null,
+                  "time": null,
+                  "tmpfs": null
+                }
+              }
+            ]
+          }
+        }
+      },
+      "RunResourceUsage": {
+        "type": "object",
+        "description": "The base resource usage of the run step.",
+        "required": [
+          "time",
+          "memory"
+        ],
+        "properties": {
+          "time": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BenchmarkResult"
+              },
+              {
+                "description": "The number of **milliseconds** the process ran."
+              }
+            ]
+          },
+          "memory": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BenchmarkResult"
+              },
+              {
+                "description": "The amount of memory the process used (in **KB**)"
+              }
+            ]
+          }
+        }
+      },
+      "RunResult": {
+        "type": "object",
+        "description": "The results of running (or compiling) a program.",
+        "required": [
+          "status",
+          "stdout",
+          "stderr",
+          "resource_usage",
+          "limits"
+        ],
+        "properties": {
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The exit code of the processes."
+          },
+          "stdout": {
+            "type": "string",
+            "description": "The stdout output the process produced."
+          },
+          "stderr": {
+            "type": "string",
+            "description": "The stderr output the process produced."
+          },
+          "resource_usage": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ResourceUsage"
+              },
+              {
+                "description": "The amount of resources the process used."
+              }
+            ]
+          },
+          "limits": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Limits"
+              },
+              {
+                "description": "The limits that applied to the process."
+              }
+            ]
+          }
+        }
+      },
+      "__BuildRun__CompileError": {
+        "type": "object",
+        "required": [
+          "error",
+          "details"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "compile_error",
+            "readOnly": true
+          },
+          "details": {
+            "$ref": "#/components/schemas/RunResult"
+          }
+        }
+      },
+      "__BuildRun__CompileLimitsExceeded": {
+        "type": "object",
+        "required": [
+          "error",
+          "details"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "compile_limits_exceeded",
+            "readOnly": true
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LimitExceeded"
+            }
+          }
+        }
+      },
+      "__BuildRun__EnvironmentNotFound": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "environment_not_found",
+            "readOnly": true
+          }
+        }
+      },
+      "__BuildRun__InvalidEnvVars": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "invalid_env_vars",
+            "readOnly": true
+          }
+        }
+      },
+      "__BuildRun__InvalidFileNames": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "invalid_file_names",
+            "readOnly": true
+          }
+        }
+      },
+      "__BuildRun__RunLimitsExceeded": {
+        "type": "object",
+        "required": [
+          "error",
+          "details"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "run_limits_exceeded",
+            "readOnly": true
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LimitExceeded"
+            }
+          }
+        }
+      },
+      "__Build__CompileError": {
+        "type": "object",
+        "required": [
+          "error",
+          "details"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "compile_error",
+            "readOnly": true
+          },
+          "details": {
+            "$ref": "#/components/schemas/RunResult"
+          }
+        }
+      },
+      "__Build__CompileLimitsExceeded": {
+        "type": "object",
+        "required": [
+          "error",
+          "details"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "compile_limits_exceeded",
+            "readOnly": true
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LimitExceeded"
+            }
+          }
+        }
+      },
+      "__Build__EnvironmentNotFound": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "environment_not_found",
+            "readOnly": true
+          }
+        }
+      },
+      "__Build__InvalidEnvVars": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "invalid_env_vars",
+            "readOnly": true
+          }
+        }
+      },
+      "__Build__InvalidFileNames": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "invalid_file_names",
+            "readOnly": true
+          }
+        }
+      },
+      "__GetBaseResourceUsage__EnvironmentNotFound": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "environment_not_found",
+            "readOnly": true
+          }
+        }
+      },
+      "__Run__InvalidEnvVars": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "invalid_env_vars",
+            "readOnly": true
+          }
+        }
+      },
+      "__Run__InvalidFileNames": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "invalid_file_names",
+            "readOnly": true
+          }
+        }
+      },
+      "__Run__ProgramNotFound": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "program_not_found",
+            "readOnly": true
+          }
+        }
+      },
+      "__Run__RunLimitsExceeded": {
+        "type": "object",
+        "required": [
+          "error",
+          "details"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "default": "run_limits_exceeded",
+            "readOnly": true
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LimitExceeded"
+            }
+          }
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "url": "/openapi.json"
+  }
+}

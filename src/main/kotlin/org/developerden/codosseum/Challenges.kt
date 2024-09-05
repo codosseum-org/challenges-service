@@ -10,18 +10,27 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.resources.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.contextual
 import org.developerden.codosseum.config.ChallengesConfiguration
-
 import org.developerden.codosseum.files.StoredChallenges
 import org.developerden.codosseum.files.stored.GitStoredChallenges
 import org.developerden.codosseum.files.stored.LocalStoredChallenges
 import org.developerden.codosseum.files.trigger.GitFileUpdateTrigger
 import org.developerden.codosseum.files.trigger.LocalFileUpdateTrigger
 import org.developerden.codosseum.model.Challenge
+import org.developerden.codosseum.sandkasten.api.apis.ProgramsApi
+import org.developerden.codosseum.serializers.UUIDSerializer
 import org.developerden.codosseum.server.routes.getRandomChallenge
 import org.developerden.codosseum.server.routes.validate
+import org.developerden.codosseum.validation.SolutionValidationService
+import org.koin.core.module.dsl.singleOf
+import org.koin.ktor.plugin.Koin
 import java.nio.file.Paths
 import kotlin.coroutines.CoroutineContext
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation.Plugin as ClientContentNegotation
+import org.koin.dsl.module as koinModule
 
 object ChallengesService : CoroutineScope {
 
@@ -82,14 +91,32 @@ object ChallengesService : CoroutineScope {
 
 fun ApplicationEngineEnvironmentBuilder.config() {
 	module {
+		val json = Json {
+			serializersModule = (SerializersModule {
+				contextual(UUIDSerializer)
+			})
+		}
 		install(ContentNegotiation) {
-			json()
+			json(json)
 		}
 		install(Resources)
 
 		routing {
 			validate()
 			getRandomChallenge()
+		}
+
+		install(Koin) {
+			modules(koinModule {
+				single {
+					ProgramsApi("https://sandkasten.developerden.org", httpClientConfig = {
+						it.install(ClientContentNegotation) {
+							json(json)
+						}
+					})
+				}
+				singleOf(::SolutionValidationService)
+			})
 		}
 	}
 

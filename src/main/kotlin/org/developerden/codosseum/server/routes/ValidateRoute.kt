@@ -7,8 +7,12 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.developerden.codosseum.ChallengesService
 import org.developerden.codosseum.server.Validate
+import org.developerden.codosseum.validation.SolutionValidationService
+import org.koin.ktor.ext.inject
+
 
 fun Routing.validate() {
+	val validation by inject<SolutionValidationService>()
 	get<Validate.Title> { route ->
 		ChallengesService.logger.info { "Validating challenge ${route.title}" }
 		val found = ChallengesService.findChallenge(route.title)
@@ -19,6 +23,6 @@ fun Routing.validate() {
 		}
 		val (stored, challenge) = found
 
-		call.respond(stored.validateChallenge(challenge))
+		call.respond(validation.validateChallenge(stored, challenge))
 	}
 }

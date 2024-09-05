@@ -11,7 +11,7 @@ import kotlin.io.path.isDirectory
 import kotlin.io.path.listDirectoryEntries
 
 class GitStoredChallenges(
-	val repository: Repository
+	private val repository: Repository
 ) : StoredChallenges {
 
 	override val schema: Path

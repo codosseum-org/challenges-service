@@ -10,7 +10,7 @@ import kotlinx.serialization.json.*
 import org.developerden.codosseum.model.Challenge
 import org.developerden.codosseum.serializers.ValidationErrorSerializer
 
-fun validate(schema: String, challenge: Challenge): ValidationOutput {
+fun validate(schema: String, challenge: Challenge): ChallengeSchemaValidationOutput {
 	val x = Load().loadOne(challenge.inputStream).toJsonElement()
 
 	val loader = JsonSchema.fromDefinition(schema)
@@ -19,7 +19,7 @@ fun validate(schema: String, challenge: Challenge): ValidationOutput {
 
 	val success = loader.validate(x, errors::add)
 
-	return ValidationOutput(success, errors.toList())
+	return ChallengeSchemaValidationOutput(success, errors.toList())
 }
 
 private fun Any?.toJsonElement(): JsonElement {
@@ -37,7 +37,7 @@ private fun Any?.toJsonElement(): JsonElement {
 }
 
 @Serializable
-data class ValidationOutput(
+data class ChallengeSchemaValidationOutput(
 	val success: Boolean,
 	val errors: List<@Serializable(with = ValidationErrorSerializer::class) ValidationError>
 )
@@ -45,6 +45,7 @@ data class ValidationOutput(
 @Serializable
 data class ValidationResult(
 	val challengeName: String,
-	val output: @Contextual ValidationOutput
+	val schemaValidation: ChallengeSchemaValidationOutput,
+	val solutionValidation:SolutionValidationResult
 )
 

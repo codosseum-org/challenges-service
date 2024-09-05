@@ -3,7 +3,7 @@ import math
 n = int(input())
 base = int(input())
 number_str = input()
-number = int(number_str, n)
+number = int(number_str, base)
 
 n = n % int(len(number_str))
 
