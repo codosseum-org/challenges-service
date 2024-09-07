@@ -1,17 +1,20 @@
 package org.developerden.codosseum.validation
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.toSet
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import org.developerden.codosseum.model.Challenge
 import org.developerden.codosseum.sandkasten.api.apis.ProgramsApi
-import org.developerden.codosseum.sandkasten.api.models.*
+import org.developerden.codosseum.sandkasten.api.models.BuildRequest
+import org.developerden.codosseum.sandkasten.api.models.BuildRequestMainFile
+import org.developerden.codosseum.sandkasten.api.models.RunRequest
 
 suspend fun validateSolutions(api: ProgramsApi, challenge: Challenge): SolutionValidationResult {
-
 	val compiledSolution = api.compile(
 		BuildRequest(
 			challenge.info.solution.language,
@@ -55,9 +58,17 @@ data class FailedTest(
 	val stderr: String = ""
 )
 
+@Serializable
+data class TemplateValidationResult(
+	val success: Boolean,
+	val errors: String?
+)
+
 
 inline fun <T, R> Flow<T>.concurrentMap(crossinline transform: suspend (T) -> R): Flow<R> = channelFlow {
-	collect {
-		launch { send(transform(it)) }
+	withContext(Dispatchers.IO) {
+		collect {
+			launch { send(transform(it)) }
+		}
 	}
 }

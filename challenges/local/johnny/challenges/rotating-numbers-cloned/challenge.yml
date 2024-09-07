@@ -28,7 +28,10 @@ text: |
   - Any base between 2 and 16 is possible, not just "common" ones.
 
 
-inputFormat: "TODO"
+inputFormat: |
+  amount : Integer
+  base : Integer
+  input : Integer
 
 examples:
   - in: ["3", "10", "12345"]
