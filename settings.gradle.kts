@@ -41,6 +41,7 @@ dependencyResolutionManagement {
 			library("ktor.client-serialization", "io.ktor", "ktor-client-serialization").withoutVersion()
 			library("ktor.clientnegotiation", "io.ktor", "ktor-client-content-negotiation").withoutVersion()
 			library("ktor.javahttp", "io.ktor", "ktor-client-java").withoutVersion()
+			library("ktor.micrometer", "io.ktor", "ktor-server-metrics-micrometer").withoutVersion()
 
 			bundle(
 				"ktor",
@@ -54,7 +55,8 @@ dependencyResolutionManagement {
 					"ktor.client",
 					"ktor.client-serialization",
 					"ktor.clientnegotiation",
-					"ktor.javahttp"
+					"ktor.javahttp",
+					"ktor.micrometer"
 				)
 			)
 

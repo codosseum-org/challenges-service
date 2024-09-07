@@ -45,6 +45,7 @@ data class ChallengeSchemaValidationOutput(
 data class ValidationResult(
 	val challengeName: String,
 	val schemaValidation: ChallengeSchemaValidationOutput,
-	val solutionValidation: SolutionValidationResult
+	val solutionValidation: SolutionValidationResult,
+	val templateValidation: TemplateValidationResult
 )
 

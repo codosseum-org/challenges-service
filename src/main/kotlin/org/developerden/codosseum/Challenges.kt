@@ -6,6 +6,7 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
+import io.ktor.server.metrics.micrometer.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.resources.*
 import io.ktor.server.routing.*
@@ -24,6 +25,7 @@ import org.developerden.codosseum.sandkasten.api.apis.ProgramsApi
 import org.developerden.codosseum.serializers.UUIDSerializer
 import org.developerden.codosseum.server.routes.getRandomChallenge
 import org.developerden.codosseum.server.routes.validate
+import org.developerden.codosseum.templatespiler.api.apis.DefaultApi
 import org.developerden.codosseum.validation.SolutionValidationService
 import org.koin.core.module.dsl.singleOf
 import org.koin.ktor.plugin.Koin
@@ -101,6 +103,8 @@ fun ApplicationEngineEnvironmentBuilder.config() {
 		}
 		install(Resources)
 
+		install(MicrometerMetrics)
+
 		routing {
 			validate()
 			getRandomChallenge()
@@ -110,6 +114,13 @@ fun ApplicationEngineEnvironmentBuilder.config() {
 			modules(koinModule {
 				single {
 					ProgramsApi("https://sandkasten.developerden.org", httpClientConfig = {
+						it.install(ClientContentNegotation) {
+							json(json)
+						}
+					})
+				}
+				single {
+					DefaultApi("https://templatespiler.developerden.org", httpClientConfig = {
 						it.install(ClientContentNegotation) {
 							json(json)
 						}

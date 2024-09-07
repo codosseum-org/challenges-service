@@ -1,4 +1,5 @@
 import io.ktor.plugin.features.*
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 
 plugins {
 	application
@@ -58,32 +59,50 @@ tasks.test {
 	useJUnitPlatform()
 }
 
-tasks.compileKotlin {
-	dependsOn("openApiGenerate")
-}
 
 kotlin {
 	jvmToolchain(javaVersion.majorVersion.toInt())
 }
 
-openApiGenerate {
+fun GenerateTask.configureBase() {
 	generatorName.set("kotlin")
-	inputSpec.set("sandkasten-spec.json")
-	packageName.set("org.developerden.codosseum.sandkasten.api")
-	logToStderr = true
-	cleanupOutput = true
 	library.set("jvm-ktor")
+	outputDir.set(project.layout.buildDirectory.dir("generated/$name").get().asFile.absolutePath)
 	additionalProperties.apply {
 		put("omitGradlePluginVersions", true)
 		put("omitGradleWrapper", true)
 		put("serializationLibrary", "kotlinx_serialization")
 	}
+	outputs.upToDateWhen { false }
+	outputs.cacheIf { false }
+}
+
+val generateSandkasten by tasks.registering(GenerateTask::class) {
+	configureBase()
+	inputSpec.set("sandkasten-spec.json")
+	packageName.set("org.developerden.codosseum.sandkasten.api")
+}
+
+val generateTemplatespiler by tasks.registering(GenerateTask::class) {
+	configureBase()
+	inputSpec.set("templatespiler-spec.json")
+	packageName.set("org.developerden.codosseum.templatespiler.api")
+}
+
+tasks.compileKotlin {
+	dependsOn("generateSandkasten", "generateTemplatespiler")
+}
+
+
+openApiGenerate {
+
 }
 
 sourceSets {
 	main {
 		kotlin {
-			srcDirs("${openApiGenerate.outputDir.get()}/src/main/kotlin")
+			srcDirs("${generateSandkasten.get().outputDir.get()}/src/main/kotlin")
+			srcDirs("${generateTemplatespiler.get().outputDir.get()}/src/main/kotlin")
 		}
 	}
 }
