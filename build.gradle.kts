@@ -15,6 +15,7 @@ val javaVersion = JavaVersion.VERSION_21
 
 repositories {
 	mavenCentral()
+	maven(url = "https://maven.pkg.jetbrains.space/public/p/ktor/eap")
 }
 
 dependencies {
@@ -89,13 +90,16 @@ val generateTemplatespiler by tasks.registering(GenerateTask::class) {
 	packageName.set("org.developerden.codosseum.templatespiler.api")
 }
 
-tasks.compileKotlin {
-	dependsOn("generateSandkasten", "generateTemplatespiler")
+
+task<Exec>("generateAndFix") {
+	commandLine("./fix-generated.sh")
+		.workingDir(project.projectDir)
+
+	dependsOn(generateSandkasten, generateTemplatespiler)
 }
 
-
-openApiGenerate {
-
+tasks.compileKotlin {
+	dependsOn("generateAndFix")
 }
 
 sourceSets {

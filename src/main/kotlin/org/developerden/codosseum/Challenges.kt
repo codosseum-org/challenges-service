@@ -10,6 +10,7 @@ import io.ktor.server.metrics.micrometer.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.resources.*
 import io.ktor.server.routing.*
+import io.ktor.server.sse.*
 import kotlinx.coroutines.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
@@ -31,7 +32,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.ktor.plugin.Koin
 import java.nio.file.Paths
 import kotlin.coroutines.CoroutineContext
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation.Plugin as ClientContentNegotation
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientContentNegotiation
 import org.koin.dsl.module as koinModule
 
 object ChallengesService : CoroutineScope {
@@ -78,9 +79,16 @@ object ChallengesService : CoroutineScope {
 		}
 
 		launch {
-			embeddedServer(CIO, applicationEngineEnvironment {
-				config()
-			}).start(wait = true)
+			embeddedServer(CIO, applicationEnvironment {
+//				config()
+			}, configure = {
+				connector {
+					host = "0.0.0.0"
+					port = 8080
+				}
+			},
+				ktorModule
+			).start(wait = true)
 		}
 	}
 
@@ -91,50 +99,47 @@ object ChallengesService : CoroutineScope {
 }
 
 
-fun ApplicationEngineEnvironmentBuilder.config() {
-	module {
-		val json = Json {
-			serializersModule = (SerializersModule {
-				contextual(UUIDSerializer)
-			})
-		}
-		install(ContentNegotiation) {
-			json(json)
-		}
-		install(Resources)
+val ktorModule: Application.() -> Unit = {
 
-		install(MicrometerMetrics)
+	val json = Json {
+		serializersModule = (SerializersModule {
+			contextual(UUIDSerializer)
+		})
+	}
+	install(ContentNegotiation) {
+		json(json)
+	}
+	install(Resources)
 
-		routing {
-			validate()
-			getRandomChallenge()
-		}
+	install(MicrometerMetrics)
 
-		install(Koin) {
-			modules(koinModule {
-				single {
-					ProgramsApi("https://sandkasten.developerden.org", httpClientConfig = {
-						it.install(ClientContentNegotation) {
-							json(json)
-						}
-					})
-				}
-				single {
-					DefaultApi("https://templatespiler.developerden.org", httpClientConfig = {
-						it.install(ClientContentNegotation) {
-							json(json)
-						}
-					})
-				}
-				singleOf(::SolutionValidationService)
-			})
-		}
+	install(SSE)
+	routing {
+		validate()
+		getRandomChallenge()
 	}
 
-	connector {
-		host = "0.0.0.0"
-		port = 8080
+	install(Koin) {
+		modules(koinModule {
+			single {
+				ProgramsApi("https://sandkasten.developerden.org", httpClientConfig = {
+					it.install(ClientContentNegotiation) {
+						json(json)
+					}
+				})
+			}
+			single {
+				DefaultApi("https://templatespiler.developerden.org", httpClientConfig = {
+					it.install(ClientContentNegotiation) {
+						json(json)
+					}
+				})
+			}
+			singleOf(::SolutionValidationService)
+		})
 	}
+
+
 }
 
 suspend fun main(): Unit = ChallengesService.startup()
