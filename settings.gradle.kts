@@ -4,7 +4,7 @@ dependencyResolutionManagement {
 	versionCatalogs {
 		create("libs") {
 			version("kotlin", "2.0.20")
-			version("ktor", "2.3.12")
+			version("ktor", "3.0.0-beta-2")
 
 
 			plugin("jvm", "org.jetbrains.kotlin.jvm").versionRef("kotlin")
@@ -42,6 +42,7 @@ dependencyResolutionManagement {
 			library("ktor.clientnegotiation", "io.ktor", "ktor-client-content-negotiation").withoutVersion()
 			library("ktor.javahttp", "io.ktor", "ktor-client-java").withoutVersion()
 			library("ktor.micrometer", "io.ktor", "ktor-server-metrics-micrometer").withoutVersion()
+			library("ktor.sse", "io.ktor", "ktor-server-sse").withoutVersion()
 
 			bundle(
 				"ktor",
@@ -56,7 +57,8 @@ dependencyResolutionManagement {
 					"ktor.client-serialization",
 					"ktor.clientnegotiation",
 					"ktor.javahttp",
-					"ktor.micrometer"
+					"ktor.micrometer",
+					"ktor.sse"
 				)
 			)
 
