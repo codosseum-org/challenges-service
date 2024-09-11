@@ -6,7 +6,6 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
-import io.ktor.server.metrics.micrometer.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.resources.*
 import io.ktor.server.routing.*
@@ -21,15 +20,16 @@ import org.developerden.codosseum.files.stored.GitStoredChallenges
 import org.developerden.codosseum.files.stored.LocalStoredChallenges
 import org.developerden.codosseum.files.trigger.GitFileUpdateTrigger
 import org.developerden.codosseum.files.trigger.LocalFileUpdateTrigger
+import org.developerden.codosseum.ktor_koin.FixedKoin
 import org.developerden.codosseum.model.Challenge
 import org.developerden.codosseum.sandkasten.api.apis.ProgramsApi
 import org.developerden.codosseum.serializers.UUIDSerializer
+import org.developerden.codosseum.server.routes.events
 import org.developerden.codosseum.server.routes.getRandomChallenge
 import org.developerden.codosseum.server.routes.validate
 import org.developerden.codosseum.templatespiler.api.apis.DefaultApi
 import org.developerden.codosseum.validation.SolutionValidationService
 import org.koin.core.module.dsl.singleOf
-import org.koin.ktor.plugin.Koin
 import java.nio.file.Paths
 import kotlin.coroutines.CoroutineContext
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientContentNegotiation
@@ -64,7 +64,6 @@ object ChallengesService : CoroutineScope {
 			launch {
 				LocalFileUpdateTrigger(Paths.get(it)).setupTrigger()
 			}
-
 			storedChallenges += LocalStoredChallenges(it)
 		}
 
@@ -80,14 +79,11 @@ object ChallengesService : CoroutineScope {
 
 		launch {
 			embeddedServer(CIO, applicationEnvironment {
-//				config()
 			}, configure = {
 				connector {
-					host = "0.0.0.0"
 					port = 8080
 				}
-			},
-				ktorModule
+			}, ktorModule
 			).start(wait = true)
 		}
 	}
@@ -100,26 +96,28 @@ object ChallengesService : CoroutineScope {
 
 
 val ktorModule: Application.() -> Unit = {
-
 	val json = Json {
 		serializersModule = (SerializersModule {
 			contextual(UUIDSerializer)
 		})
 	}
+
 	install(ContentNegotiation) {
 		json(json)
 	}
 	install(Resources)
 
-	install(MicrometerMetrics)
+//	install(MicrometerMetrics)
 
 	install(SSE)
+
 	routing {
 		validate()
 		getRandomChallenge()
+		events()
 	}
 
-	install(Koin) {
+	install(FixedKoin) {
 		modules(koinModule {
 			single {
 				ProgramsApi("https://sandkasten.developerden.org", httpClientConfig = {
@@ -136,6 +134,8 @@ val ktorModule: Application.() -> Unit = {
 				})
 			}
 			singleOf(::SolutionValidationService)
+			singleOf(::SSEEventBus)
+			single { json }
 		})
 	}
 

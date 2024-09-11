@@ -1,12 +1,17 @@
 package org.developerden.codosseum.validation
 
+import org.developerden.codosseum.SSEEventBus
 import org.developerden.codosseum.files.StoredChallenges
 import org.developerden.codosseum.model.Challenge
 import org.developerden.codosseum.sandkasten.api.apis.ProgramsApi
 import org.developerden.codosseum.templatespiler.api.apis.DefaultApi
 import kotlin.io.path.readText
 
-class SolutionValidationService(private val programsApi: ProgramsApi, private val defaultApi: DefaultApi) {
+class SolutionValidationService(
+	private val programsApi: ProgramsApi,
+	private val defaultApi: DefaultApi,
+	private val eventsBus: SSEEventBus
+) {
 	suspend fun validateChallenge(storedChallenges: StoredChallenges, challenge: Challenge): ValidationResult =
 		ValidationResult(
 			challenge.name,
@@ -19,5 +24,5 @@ class SolutionValidationService(private val programsApi: ProgramsApi, private va
 		validate(storedChallenges.schema.readText(Charsets.UTF_8), challenge)
 
 	suspend fun isSolutionsValid(challenge: Challenge): SolutionValidationResult =
-		validateSolutions(programsApi, challenge)
+		validateSolutions(eventsBus, programsApi, challenge)
 }
