@@ -32,6 +32,7 @@ dependencyResolutionManagement {
 			)
 
 			library("ktor.server.cio", "io.ktor", "ktor-server-cio").withoutVersion()
+			library("ktor.server.netty", "io.ktor", "ktor-server-netty").withoutVersion()
 			library("ktor.server.core", "io.ktor", "ktor-server-core").withoutVersion()
 			library("ktor.server.resources", "io.ktor", "ktor-server-resources").withoutVersion()
 			library("ktor.server.negotiation", "io.ktor", "ktor-server-content-negotiation").withoutVersion()
@@ -49,6 +50,7 @@ dependencyResolutionManagement {
 				listOf(
 					"ktor.server.core",
 					"ktor.server.cio",
+					"ktor.server.netty",
 					"ktor.server.resources",
 					"ktor.server.negotiation",
 					"ktor.server.logging",

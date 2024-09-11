@@ -8,13 +8,19 @@ import kotlinx.coroutines.flow.toSet
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
+import org.developerden.codosseum.SSEEventBus
 import org.developerden.codosseum.model.Challenge
+import org.developerden.codosseum.model.TestCompleteEvent
 import org.developerden.codosseum.sandkasten.api.apis.ProgramsApi
 import org.developerden.codosseum.sandkasten.api.models.BuildRequest
 import org.developerden.codosseum.sandkasten.api.models.BuildRequestMainFile
 import org.developerden.codosseum.sandkasten.api.models.RunRequest
 
-suspend fun validateSolutions(api: ProgramsApi, challenge: Challenge): SolutionValidationResult {
+suspend fun validateSolutions(
+	eventsBus: SSEEventBus,
+	api: ProgramsApi,
+	challenge: Challenge
+): SolutionValidationResult {
 	val compiledSolution = api.compile(
 		BuildRequest(
 			challenge.info.solution.language,
@@ -24,13 +30,24 @@ suspend fun validateSolutions(api: ProgramsApi, challenge: Challenge): SolutionV
 
 
 	val results =
-		challenge.info.publicTests.asFlow().concurrentMap {
+		challenge.info.publicTests.asFlow().concurrentMap { test ->
 			val body = api.runProgram(
 				compiledSolution.programId, RunRequest(
-					it.input.joinToString("\n")
+					test.input.joinToString("\n")
 				)
 			).body()
-			it to body
+			val succeeded = body.stdout.trim() == test.output.joinToString("\n")
+			eventsBus.publish(
+				TestCompleteEvent(
+					challenge.name, test.name, succeeded, if (succeeded) null else FailedTest(
+						test.name,
+						test.output.joinToString("\n"),
+						body.stdout.trim(),
+						body.stderr
+					)
+				)
+			)
+			test to body
 		}.toSet().toMap()
 
 

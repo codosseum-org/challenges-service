@@ -1,14 +1,13 @@
 package org.developerden.codosseum.server.routes
 
 import io.ktor.http.*
-import io.ktor.server.application.*
 import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.developerden.codosseum.ChallengesService
 import org.developerden.codosseum.server.Validate
 import org.developerden.codosseum.validation.SolutionValidationService
-import org.koin.ktor.ext.inject
+import org.developerden.codosseum.ktor_koin.inject
 
 
 fun Routing.validate() {
