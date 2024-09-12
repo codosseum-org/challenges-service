@@ -1,5 +1,7 @@
 package org.developerden.codosseum.server.routes
 
+import io.github.tabilzad.ktor.annotations.GenerateOpenApi
+import io.github.tabilzad.ktor.annotations.Tag
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.resources.*
@@ -8,6 +10,7 @@ import io.ktor.server.routing.*
 import org.developerden.codosseum.ChallengesService
 import org.developerden.codosseum.server.RandomChallenge
 
+@GenerateOpenApi
 fun Routing.getRandomChallenge() {
 	get<RandomChallenge> { route ->
 		var challenge = ChallengesService.challenges

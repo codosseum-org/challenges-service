@@ -7,6 +7,7 @@ plugins {
 	alias(libs.plugins.ktor)
 	alias(libs.plugins.serialization)
 	alias(libs.plugins.openapi)
+	alias(libs.plugins.ktorOpenapi)
 	checkstyle
 }
 
@@ -111,3 +112,13 @@ sourceSets {
 	}
 }
 
+swagger{
+	documentation {
+		docsTitle = "Codosseum Challenges Service"
+		docsVersion = version.toString()
+
+	}
+	pluginOptions {
+		format = "yaml"
+	}
+}

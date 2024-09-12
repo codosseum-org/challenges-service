@@ -7,6 +7,7 @@ import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.swagger.*
 import io.ktor.server.resources.*
 import io.ktor.server.routing.*
 import io.ktor.server.sse.*
@@ -77,6 +78,7 @@ object ChallengesService : CoroutineScope {
 			storedChallenges += GitStoredChallenges(it)
 		}
 
+		logger.info { "Starting server." }
 		launch {
 			embeddedServer(CIO, applicationEnvironment {
 			}, configure = {
@@ -115,6 +117,9 @@ val ktorModule: Application.() -> Unit = {
 		validate()
 		getRandomChallenge()
 		events()
+		swaggerUI("swagger", "openapi/openapi.yaml") {
+			version = "5.17.12"
+		}
 	}
 
 	install(FixedKoin) {
