@@ -112,7 +112,7 @@ sourceSets {
 	}
 }
 
-swagger{
+swagger {
 	documentation {
 		docsTitle = "Codosseum Challenges Service"
 		docsVersion = version.toString()
