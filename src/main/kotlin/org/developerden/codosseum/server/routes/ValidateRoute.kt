@@ -1,5 +1,6 @@
 package org.developerden.codosseum.server.routes
 
+import io.github.tabilzad.ktor.annotations.GenerateOpenApi
 import io.ktor.http.*
 import io.ktor.server.resources.*
 import io.ktor.server.response.*
@@ -10,6 +11,7 @@ import org.developerden.codosseum.validation.SolutionValidationService
 import org.developerden.codosseum.ktor_koin.inject
 
 
+@GenerateOpenApi
 fun Routing.validate() {
 	val validation by inject<SolutionValidationService>()
 	get<Validate.Title> { route ->

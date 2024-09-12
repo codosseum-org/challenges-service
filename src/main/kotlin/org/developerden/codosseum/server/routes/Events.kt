@@ -1,5 +1,6 @@
 package org.developerden.codosseum.server.routes
 
+import io.github.tabilzad.ktor.annotations.GenerateOpenApi
 import io.ktor.server.routing.*
 import io.ktor.server.sse.*
 import io.ktor.sse.*
@@ -9,6 +10,7 @@ import org.developerden.codosseum.SSEEventBus
 import org.developerden.codosseum.model.SSE
 import org.developerden.codosseum.ktor_koin.inject
 
+@GenerateOpenApi
 fun Routing.events() {
 	val eventBus by inject<SSEEventBus>()
 	val json by inject<Json>()

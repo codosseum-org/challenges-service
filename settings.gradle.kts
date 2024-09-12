@@ -3,7 +3,7 @@ rootProject.name = "challenges-service"
 dependencyResolutionManagement {
 	versionCatalogs {
 		create("libs") {
-			version("kotlin", "2.0.20")
+			version("kotlin", "2.0.0")
 			version("ktor", "3.0.0-beta-2")
 
 
@@ -11,6 +11,7 @@ dependencyResolutionManagement {
 			plugin("serialization", "org.jetbrains.kotlin.plugin.serialization").versionRef("kotlin")
 			plugin("ktor", "io.ktor.plugin").versionRef("ktor")
 			plugin("openapi", "org.openapi.generator").version("7.8.0")
+			plugin("ktorOpenapi", "io.github.tabilzad.ktor-docs-plugin-gradle").version("0.6.2-alpha")
 
 			version("coroutines", "1.9.0-RC.2")
 			version("serialization", "1.7.2")
@@ -44,6 +45,9 @@ dependencyResolutionManagement {
 			library("ktor.javahttp", "io.ktor", "ktor-client-java").withoutVersion()
 			library("ktor.micrometer", "io.ktor", "ktor-server-metrics-micrometer").withoutVersion()
 			library("ktor.sse", "io.ktor", "ktor-server-sse").withoutVersion()
+			library("ktor.openapi", "io.ktor", "ktor-server-openapi").withoutVersion()
+			library("ktor.swagger", "io.ktor", "ktor-server-swagger").withoutVersion()
+			library("ktor.resources", "io.ktor", "ktor-server-resources").withoutVersion()
 
 			bundle(
 				"ktor",
@@ -60,7 +64,10 @@ dependencyResolutionManagement {
 					"ktor.clientnegotiation",
 					"ktor.javahttp",
 					"ktor.micrometer",
-					"ktor.sse"
+					"ktor.sse",
+					"ktor.openapi",
+					"ktor.swagger",
+					"ktor.resources"
 				)
 			)
 
