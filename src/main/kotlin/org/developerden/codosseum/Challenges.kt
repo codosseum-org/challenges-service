@@ -127,7 +127,7 @@ val ktorModule: Application.() -> Unit = {
 				})
 			}
 			single {
-				DefaultApi("https://templatespiler.developerden.org", httpClientConfig = {
+				DefaultApi("https://templatespiler-codosseum.developerden.org", httpClientConfig = {
 					it.install(ClientContentNegotiation) {
 						json(json)
 					}
