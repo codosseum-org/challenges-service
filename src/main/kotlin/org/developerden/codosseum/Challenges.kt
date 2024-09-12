@@ -118,7 +118,7 @@ val ktorModule: Application.() -> Unit = {
 		getRandomChallenge()
 		events()
 		swaggerUI("swagger", "openapi/openapi.yaml") {
-			version = "5.17.12"
+			version = "5.17.14"
 		}
 	}
 

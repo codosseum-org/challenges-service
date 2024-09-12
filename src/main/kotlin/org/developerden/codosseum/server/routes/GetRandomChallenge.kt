@@ -1,17 +1,26 @@
 package org.developerden.codosseum.server.routes
 
 import io.github.tabilzad.ktor.annotations.GenerateOpenApi
-import io.github.tabilzad.ktor.annotations.Tag
+import io.github.tabilzad.ktor.annotations.KtorDescription
+import io.github.tabilzad.ktor.annotations.KtorResponds
+import io.github.tabilzad.ktor.annotations.ResponseEntry
 import io.ktor.http.*
-import io.ktor.server.application.*
 import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.developerden.codosseum.ChallengesService
+import org.developerden.codosseum.model.ChallengeInfo
 import org.developerden.codosseum.server.RandomChallenge
 
 @GenerateOpenApi
+@KtorDescription("Get a random challenge")
 fun Routing.getRandomChallenge() {
+	@KtorResponds(
+		mapping = [
+			ResponseEntry("200", ChallengeInfo::class),
+			ResponseEntry("404", String::class)
+		]
+	)
 	get<RandomChallenge> { route ->
 		var challenge = ChallengesService.challenges
 		if (route.tagFilters.isNotEmpty()) {
