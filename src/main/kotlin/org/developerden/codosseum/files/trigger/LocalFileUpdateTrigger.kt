@@ -24,7 +24,6 @@ class LocalFileUpdateTrigger(val path: Path) : FileUpdateTrigger {
 			watcher.add(it.absolutePathString())
 		}
 
-		println(watcher.watchingDirectories)
 		withContext(ChallengesService.coroutineContext) {
 			launch {
 				watcher.onEventFlow.collect {
