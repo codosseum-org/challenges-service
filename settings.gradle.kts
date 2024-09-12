@@ -80,8 +80,8 @@ dependencyResolutionManagement {
 
 			library("jgit", "org.eclipse.jgit", "org.eclipse.jgit").version("6.6.1.202309021850-r")
 
-			version("logback", "1.4.11")
-			version("kotlin-logging", "5.1.0")
+			version("logback", "1.5.8")
+			version("kotlin-logging", "7.0.0")
 
 			library("logging.logback", "ch.qos.logback", "logback-classic").versionRef("logback")
 			library("logging.kotlin", "io.github.oshai", "kotlin-logging-jvm").versionRef("kotlin-logging")
