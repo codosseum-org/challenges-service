@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.developerden.codosseum.ktor_koin
+package org.developerden.codosseum.server.koin
 
 import io.ktor.server.application.*
 import io.ktor.server.application.hooks.*
