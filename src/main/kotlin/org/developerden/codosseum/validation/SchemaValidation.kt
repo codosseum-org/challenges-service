@@ -10,13 +10,13 @@ import org.developerden.codosseum.model.Challenge
 import org.developerden.codosseum.serializers.ValidationErrorSerializer
 
 fun validate(schema: String, challenge: Challenge): ChallengeSchemaValidationOutput {
-	val x = Load().loadOne(challenge.inputStream).toJsonElement()
+	val element = Load().loadOne(challenge.inputStream).toJsonElement()
 
 	val loader = JsonSchema.fromDefinition(schema)
 
 	val errors = mutableListOf<ValidationError>()
 
-	val success = loader.validate(x, errors::add)
+	val success = loader.validate(element, errors::add)
 
 	return ChallengeSchemaValidationOutput(success, errors.toList())
 }
@@ -24,8 +24,8 @@ fun validate(schema: String, challenge: Challenge): ChallengeSchemaValidationOut
 private fun Any?.toJsonElement(): JsonElement {
 	return when (this) {
 		is Map<*, *> -> JsonObject(entries.associate { (key, value) -> "$key" to value.toJsonElement() })
-		is List<*> -> JsonArray(map { it.toJsonElement() })
-		is Set<*> -> JsonArray(map { it.toJsonElement() })
+		is List<*> -> JsonArray(map(Any?::toJsonElement))
+		is Set<*> -> JsonArray(map(Any?::toJsonElement))
 		is Boolean -> JsonPrimitive(this)
 		is Number -> JsonPrimitive(this)
 		is String -> JsonPrimitive(this)

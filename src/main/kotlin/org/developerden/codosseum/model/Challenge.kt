@@ -1,9 +1,11 @@
 package org.developerden.codosseum.model
 
+import kotlinx.serialization.Serializable
 import java.io.InputStream
 import java.nio.file.Path
 import kotlin.io.path.inputStream
 
+@Serializable
 data class Challenge(
 	/**
 	 * Internal name/id of the challenge
