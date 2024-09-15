@@ -1,4 +1,5 @@
 import io.ktor.plugin.features.*
+import org.gradle.internal.os.OperatingSystem
 import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 
 plugins {
@@ -93,7 +94,8 @@ val generateTemplatespiler by tasks.registering(GenerateTask::class) {
 
 
 task<Exec>("generateAndFix") {
-	commandLine("./fix-generated.sh")
+	val file = if (OperatingSystem.current().isMacOsX) "./fix-generated-macos.sh" else "./fix-generated-linux.sh"
+	commandLine(file)
 		.workingDir(project.projectDir)
 
 	dependsOn(generateSandkasten, generateTemplatespiler)
@@ -116,8 +118,9 @@ swagger {
 	documentation {
 		docsTitle = "Codosseum Challenges Service"
 		docsVersion = version.toString()
-
+		generateRequestSchemas = true
 	}
+
 	pluginOptions {
 		format = "yaml"
 	}
