@@ -13,7 +13,7 @@ dependencyResolutionManagement {
 			plugin("openapi", "org.openapi.generator").version("7.8.0")
 			plugin("ktorOpenapi", "io.github.tabilzad.ktor-docs-plugin-gradle").version("0.6.2-alpha")
 
-			version("coroutines", "1.9.0-RC.2")
+			version("coroutines", "1.9.0")
 			version("serialization", "1.7.2")
 
 			library(
@@ -76,9 +76,9 @@ dependencyResolutionManagement {
 			library("koin.ktor", "io.insert-koin", "koin-ktor").versionRef("koin")
 			bundle("koin", listOf("koin", "koin.ktor"))
 
-			library("kfswatch", "io.github.irgaly.kfswatch", "kfswatch").version("0.9.0")
+			library("kfswatch", "io.github.irgaly.kfswatch", "kfswatch").version("1.3.0")
 
-			library("jgit", "org.eclipse.jgit", "org.eclipse.jgit").version("6.6.1.202309021850-r")
+			library("jgit", "org.eclipse.jgit", "org.eclipse.jgit").version("7.0.0.202409031743-r")
 
 			version("logback", "1.5.8")
 			version("kotlin-logging", "7.0.0")
@@ -90,9 +90,9 @@ dependencyResolutionManagement {
 
 			library("schema", "io.github.optimumcode", "json-schema-validator").version("0.2.3")
 			library("snakeyaml", "it.krzeminski", "snakeyaml-engine-kmp").version("3.0.2")
-			library("kaml", "com.charleskorn.kaml", "kaml").version("0.55.0")
+			library("kaml", "com.charleskorn.kaml", "kaml").version("0.61.0")
 
-			version("jackson", "2.15.1")
+			version("jackson", "2.17.2")
 			library("jackson-db", "com.fasterxml.jackson.core", "jackson-databind").versionRef("jackson")
 			library("jackson-core", "com.fasterxml.jackson.core", "jackson-core").versionRef("jackson")
 			library("jackson-annotations", "com.fasterxml.jackson.core", "jackson-annotations").versionRef("jackson")
