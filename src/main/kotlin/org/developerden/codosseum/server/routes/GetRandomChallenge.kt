@@ -10,18 +10,18 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.developerden.codosseum.ChallengesService
 import org.developerden.codosseum.model.ChallengeInfo
-import org.developerden.codosseum.server.RandomChallenge
+import org.developerden.codosseum.server.Challenges
 
 @GenerateOpenApi
-@KtorDescription("Get a random challenge")
 fun Routing.getRandomChallenge() {
+	@KtorDescription("Get a random challenge")
 	@KtorResponds(
 		mapping = [
 			ResponseEntry("200", ChallengeInfo::class),
 			ResponseEntry("404", String::class)
 		]
 	)
-	get<RandomChallenge> { route ->
+	get<Challenges.Random> { route ->
 		var challenge = ChallengesService.challenges
 		if (route.tagFilters.isNotEmpty()) {
 			challenge =
@@ -35,6 +35,5 @@ fun Routing.getRandomChallenge() {
 		} else {
 			call.respond(challenge.random().info)
 		}
-
 	}
 }

@@ -14,7 +14,6 @@ import org.developerden.codosseum.server.koin.inject
 import org.developerden.codosseum.validation.SolutionValidationService
 import org.developerden.codosseum.validation.ValidationResult
 
-
 @GenerateOpenApi
 fun Routing.validate() {
 	val validation by inject<SolutionValidationService>()
