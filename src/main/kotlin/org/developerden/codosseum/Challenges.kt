@@ -21,10 +21,10 @@ import org.developerden.codosseum.files.stored.GitStoredChallenges
 import org.developerden.codosseum.files.stored.LocalStoredChallenges
 import org.developerden.codosseum.files.trigger.GitFileUpdateTrigger
 import org.developerden.codosseum.files.trigger.LocalFileUpdateTrigger
-import org.developerden.codosseum.ktor_koin.FixedKoin
 import org.developerden.codosseum.model.Challenge
 import org.developerden.codosseum.sandkasten.api.apis.ProgramsApi
 import org.developerden.codosseum.serializers.UUIDSerializer
+import org.developerden.codosseum.server.koin.FixedKoin
 import org.developerden.codosseum.server.routes.events
 import org.developerden.codosseum.server.routes.getRandomChallenge
 import org.developerden.codosseum.server.routes.validate
