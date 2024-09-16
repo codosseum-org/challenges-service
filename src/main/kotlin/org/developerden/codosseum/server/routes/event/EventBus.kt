@@ -1,8 +1,7 @@
-package org.developerden.codosseum
+package org.developerden.codosseum.server.routes.event
 
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import org.developerden.codosseum.server.routes.Event
 
 class EventBus {
 	private val _events = MutableSharedFlow<Event<*>>()

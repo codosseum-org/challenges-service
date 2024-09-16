@@ -9,11 +9,11 @@ import io.ktor.server.sse.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
-import org.developerden.codosseum.EventBus
+import org.developerden.codosseum.server.routes.event.EventBus
 import org.developerden.codosseum.sandkasten.api.apis.ProgramsApi
 import org.developerden.codosseum.serializers.UUIDSerializer
 import org.developerden.codosseum.server.koin.FixedKoin
-import org.developerden.codosseum.server.routes.events
+import org.developerden.codosseum.server.routes.event.events
 import org.developerden.codosseum.server.routes.getRandomChallenge
 import org.developerden.codosseum.server.routes.validate
 import org.developerden.codosseum.templatespiler.api.apis.DefaultApi

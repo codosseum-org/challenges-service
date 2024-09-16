@@ -1,6 +1,6 @@
 package org.developerden.codosseum.validation
 
-import org.developerden.codosseum.EventBus
+import org.developerden.codosseum.server.routes.event.EventBus
 import org.developerden.codosseum.challenge.Challenge
 import org.developerden.codosseum.sandkasten.api.apis.ProgramsApi
 import org.developerden.codosseum.templatespiler.api.apis.DefaultApi
