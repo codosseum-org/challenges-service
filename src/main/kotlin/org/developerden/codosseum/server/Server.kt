@@ -2,7 +2,6 @@ package org.developerden.codosseum.server
 
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
-import io.ktor.server.metrics.micrometer.*
 import io.ktor.server.plugins.swagger.*
 import io.ktor.server.resources.*
 import io.ktor.server.routing.*
@@ -10,7 +9,7 @@ import io.ktor.server.sse.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
-import org.developerden.codosseum.SSEEventBus
+import org.developerden.codosseum.EventBus
 import org.developerden.codosseum.sandkasten.api.apis.ProgramsApi
 import org.developerden.codosseum.serializers.UUIDSerializer
 import org.developerden.codosseum.server.koin.FixedKoin
@@ -66,7 +65,7 @@ fun Application.ktor() {
         })
       }
       singleOf(::SolutionValidationService)
-      singleOf(::SSEEventBus)
+      singleOf(::EventBus)
       single { json }
     })
   }

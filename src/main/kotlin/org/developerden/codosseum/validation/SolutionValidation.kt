@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.toSet
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
-import org.developerden.codosseum.SSEEventBus
+import org.developerden.codosseum.EventBus
 import org.developerden.codosseum.challenge.Challenge
 import org.developerden.codosseum.sandkasten.api.apis.ProgramsApi
 import org.developerden.codosseum.sandkasten.api.models.BuildRequest
@@ -17,7 +17,7 @@ import org.developerden.codosseum.sandkasten.api.models.RunRequest
 import org.developerden.codosseum.server.routes.TestCompleteEvent
 
 suspend fun validateSolutions(
-	eventsBus: SSEEventBus,
+	eventsBus: EventBus,
 	api: ProgramsApi,
 	challenge: Challenge
 ): SolutionValidationResult {

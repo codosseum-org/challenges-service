@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import org.developerden.codosseum.server.routes.Event
 
-class SSEEventBus {
+class EventBus {
 	private val _events = MutableSharedFlow<Event<*>>()
 	val events = _events.asSharedFlow()
 
