@@ -7,11 +7,29 @@ import io.ktor.server.routing.*
 import io.ktor.server.sse.*
 import io.ktor.sse.*
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.developerden.codosseum.SSEEventBus
-import org.developerden.codosseum.model.SSE
 import org.developerden.codosseum.server.Events
 import org.developerden.codosseum.server.koin.inject
+import org.developerden.codosseum.validation.FailedTest
+
+interface Event<T: Event<T>> {
+	val type: String
+}
+
+@Serializable
+data class TestCompleteEvent(
+	val challengeName: String,
+	val testName: String,
+	val success: Boolean,
+	val failedTest: FailedTest?,
+) : Event<TestCompleteEvent> {
+
+	override val type: String
+		get() = "test_complete"
+}
 
 @GenerateOpenApi
 fun Routing.events() {
@@ -21,10 +39,9 @@ fun Routing.events() {
 	@KtorDescription("Subscribe to server sent events")
 	get<Events> {
 		sse {
-			eventBus.events.collectLatest { it: SSE<*> ->
-				val eventData = it.toJson(json)
+			eventBus.events.collectLatest { event ->
 				send(
-					ServerSentEvent(event = it.type, data = eventData)
+					ServerSentEvent(event = event.type, data = json.encodeToString(event))
 				)
 			}
 		}

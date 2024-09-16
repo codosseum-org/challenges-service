@@ -2,13 +2,13 @@ package org.developerden.codosseum
 
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import org.developerden.codosseum.model.SSE
+import org.developerden.codosseum.server.routes.Event
 
 class SSEEventBus {
-	private val _events = MutableSharedFlow<SSE<*>>()
+	private val _events = MutableSharedFlow<Event<*>>()
 	val events = _events.asSharedFlow()
 
-	suspend fun publish(event: SSE<*>) {
+	suspend fun publish(event: Event<*>) {
 		_events.emit(event)
 	}
 }
