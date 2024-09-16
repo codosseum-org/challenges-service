@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 import org.developerden.codosseum.challenge.watching.remote.Repository
 
 @Serializable
-data class ChallengesConfiguration(
+data class ServiceConfiguration(
   val watching: Watching,
 ) {
 
