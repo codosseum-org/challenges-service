@@ -1,10 +1,10 @@
 package org.developerden.codosseum.validation
 
 import org.developerden.codosseum.SSEEventBus
-import org.developerden.codosseum.files.StoredChallenges
-import org.developerden.codosseum.model.Challenge
+import org.developerden.codosseum.challenge.Challenge
 import org.developerden.codosseum.sandkasten.api.apis.ProgramsApi
 import org.developerden.codosseum.templatespiler.api.apis.DefaultApi
+import java.nio.file.Path
 import kotlin.io.path.readText
 
 class SolutionValidationService(

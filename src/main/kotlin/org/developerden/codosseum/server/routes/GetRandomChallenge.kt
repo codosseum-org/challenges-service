@@ -9,7 +9,7 @@ import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.developerden.codosseum.ChallengesService
-import org.developerden.codosseum.model.ChallengeInfo
+import org.developerden.codosseum.challenge.ChallengeInfo
 import org.developerden.codosseum.server.Challenges
 
 @GenerateOpenApi
@@ -25,10 +25,10 @@ fun Routing.getRandomChallenge() {
 		var challenge = ChallengesService.challenges
 		if (route.tagFilters.isNotEmpty()) {
 			challenge =
-				challenge.filter { it.info.tags.containsAll(route.tagFilters) } // should it be containsAll or containsAny?
+				challenge.filter { it.info.tags.containsAll(route.tagFilters) }.toMutableSet() // should it be containsAll or containsAny?
 		}
 		if (route.difficultyFilters.isNotEmpty()) {
-			challenge = challenge.filter { route.difficultyFilters.contains(it.info.difficulty) }
+			challenge = challenge.filter { route.difficultyFilters.contains(it.info.difficulty) }.toMutableSet()
 		}
 		if (challenge.isEmpty()) {
 			call.respondText("No challenges found with the given filters", status = HttpStatusCode.NotFound)

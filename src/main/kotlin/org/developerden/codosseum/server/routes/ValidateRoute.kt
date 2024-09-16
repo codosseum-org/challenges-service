@@ -12,7 +12,9 @@ import org.developerden.codosseum.ChallengesService
 import org.developerden.codosseum.server.Validate
 import org.developerden.codosseum.server.koin.inject
 import org.developerden.codosseum.validation.SolutionValidationService
+import org.developerden.codosseum.validation.StoredChallenges
 import org.developerden.codosseum.validation.ValidationResult
+import java.nio.file.Paths
 
 @GenerateOpenApi
 fun Routing.validate() {
@@ -27,7 +29,7 @@ fun Routing.validate() {
 	)
 	get<Validate.Title> { route ->
 		ChallengesService.logger.info { "Validating challenge ${route.title}" }
-		val found = ChallengesService.findChallenge(route.title)
+		val found = ChallengesService.challenges.first()
 
 		if (found == null) {
 			call.respond(HttpStatusCode.NotFound, "Challenge not found with title ${route.title}")
@@ -35,6 +37,6 @@ fun Routing.validate() {
 		}
 		val (stored, challenge) = found
 
-		call.respond(validation.validateChallenge(stored, challenge))
+		call.respond(validation.validateChallenge(StoredChallenges(Paths.get("")), found))
 	}
 }
