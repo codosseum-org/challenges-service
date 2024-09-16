@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import org.developerden.codosseum.SSEEventBus
+import org.developerden.codosseum.EventBus
 import org.developerden.codosseum.server.Events
 import org.developerden.codosseum.server.koin.inject
 import org.developerden.codosseum.validation.FailedTest
@@ -33,7 +33,7 @@ data class TestCompleteEvent(
 
 @GenerateOpenApi
 fun Routing.events() {
-	val eventBus by inject<SSEEventBus>()
+	val eventBus by inject<EventBus>()
 	val json by inject<Json>()
 
 	@KtorDescription("Subscribe to server sent events")

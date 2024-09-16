@@ -1,16 +1,15 @@
 package org.developerden.codosseum.validation
 
-import org.developerden.codosseum.SSEEventBus
+import org.developerden.codosseum.EventBus
 import org.developerden.codosseum.challenge.Challenge
 import org.developerden.codosseum.sandkasten.api.apis.ProgramsApi
 import org.developerden.codosseum.templatespiler.api.apis.DefaultApi
-import java.nio.file.Path
 import kotlin.io.path.readText
 
 class SolutionValidationService(
 	private val programsApi: ProgramsApi,
 	private val defaultApi: DefaultApi,
-	private val eventsBus: SSEEventBus
+	private val eventsBus: EventBus
 ) {
 	suspend fun validateChallenge(storedChallenges: StoredChallenges, challenge: Challenge): ValidationResult =
 		ValidationResult(
