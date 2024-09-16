@@ -23,14 +23,16 @@ repositories {
 dependencies {
 	implementation(libs.jgit)
 	implementation(libs.kaml)
-	implementation(libs.snakeyaml)
 	implementation(libs.schema)
 	implementation(libs.kfswatch)
+	implementation(libs.snakeyaml)
+	implementation(libs.bundles.koin)
 	implementation(libs.bundles.ktor)
+	implementation(libs.kotlinx.hocon)
 	implementation(libs.bundles.logging)
 	implementation(libs.bundles.kotlinx)
 	implementation(libs.bundles.jackson)
-	implementation(libs.bundles.koin)
+
 
 	testImplementation(kotlin("test"))
 }
