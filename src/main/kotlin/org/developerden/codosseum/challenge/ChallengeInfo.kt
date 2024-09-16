@@ -1,4 +1,4 @@
-package org.developerden.codosseum.model
+package org.developerden.codosseum.challenge
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
