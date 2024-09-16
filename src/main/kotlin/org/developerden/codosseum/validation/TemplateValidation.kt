@@ -1,7 +1,7 @@
 package org.developerden.codosseum.validation
 
 import io.ktor.client.call.*
-import org.developerden.codosseum.model.Challenge
+import org.developerden.codosseum.challenge.Challenge
 import org.developerden.codosseum.templatespiler.api.apis.DefaultApi
 import org.developerden.codosseum.templatespiler.api.models.TemplateParseRequest
 

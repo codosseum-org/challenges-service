@@ -2,7 +2,7 @@ package org.developerden.codosseum.server
 
 import io.github.tabilzad.ktor.annotations.KtorFieldDescription
 import io.ktor.resources.*
-import org.developerden.codosseum.model.ChallengeDifficulty
+import org.developerden.codosseum.challenge.ChallengeDifficulty
 
 @Resource("/validate")
 class Validate {
