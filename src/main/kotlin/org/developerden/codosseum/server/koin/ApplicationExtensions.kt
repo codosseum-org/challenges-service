@@ -35,12 +35,12 @@ import org.koin.ktor.plugin.setKoinApplication
  * Help work on ModuleDefinition
  */
 fun Application.getKoin(): Koin =
-	attributes.getOrNull(KOIN_ATTRIBUTE_KEY)?.koin ?: run {
-		val defaultInstance = GlobalContext.getKoinApplicationOrNull()
-			?: error("No Koin instance started. Use install(Koin) or startKoin()")
-		setKoinApplication(defaultInstance)
-		attributes[KOIN_ATTRIBUTE_KEY].koin
-	}
+  attributes.getOrNull(KOIN_ATTRIBUTE_KEY)?.koin ?: run {
+    val defaultInstance = GlobalContext.getKoinApplicationOrNull()
+      ?: error("No Koin instance started. Use install(Koin) or startKoin()")
+    setKoinApplication(defaultInstance)
+    attributes[KOIN_ATTRIBUTE_KEY].koin
+  }
 
 /**
  * inject lazily given dependency
@@ -49,10 +49,10 @@ fun Application.getKoin(): Koin =
  * @param parameters
  */
 inline fun <reified T : Any> Application.inject(
-	qualifier: Qualifier? = null,
-	noinline parameters: ParametersDefinition? = null
+  qualifier: Qualifier? = null,
+  noinline parameters: ParametersDefinition? = null,
 ) =
-	lazy { get<T>(qualifier, parameters) }
+  lazy { get<T>(qualifier, parameters) }
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -61,17 +61,17 @@ inline fun <reified T : Any> Application.inject(
  * @param parameters
  */
 inline fun <reified T : Any> Application.get(
-	qualifier: Qualifier? = null,
-	noinline parameters: ParametersDefinition? = null
+  qualifier: Qualifier? = null,
+  noinline parameters: ParametersDefinition? = null,
 ) =
-	getKoin().get<T>(qualifier, parameters)
+  getKoin().get<T>(qualifier, parameters)
 
 /**
  * Retrieve given property for KoinComponent
  * @param key - key property
  */
 fun <T : Any> Application.getProperty(key: String) =
-	getKoin().getProperty<T>(key)
+  getKoin().getProperty<T>(key)
 
 /**
  * Retrieve given property for KoinComponent
@@ -82,4 +82,4 @@ fun <T : Any> Application.getProperty(key: String) =
  *
  */
 fun Application.getProperty(key: String, defaultValue: String) =
-	getKoin().getProperty(key) ?: defaultValue
+  getKoin().getProperty(key) ?: defaultValue

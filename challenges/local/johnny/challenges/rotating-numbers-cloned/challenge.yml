@@ -10,7 +10,7 @@ license: CC-BY-SA-4.0
 language: en
 title: "Rotating Numbers"
 difficulty: "medium"
-tags: ["numbers", "simple-input", "math"]
+tags: [ "numbers", "simple-input", "math" ]
 text: |
   Rotate a number given in a specific base by a given amount of digits **to the right**.
   Rotating to the right means: *lower order* (last) digits become *higher order* (first) digits.
@@ -34,52 +34,52 @@ inputFormat: |
   input : Integer
 
 examples:
-  - in: ["3", "10", "12345"]
-    out: ["34512"]
-  - in: ["1", "2", "1101"]
-    out: ["14"]
-  - in: ["2", "10", "13408"]
-    out: ["8134"]
-  - in: ["3", "10", "13408"]
-    out: ["40813"]
+  - in: [ "3", "10", "12345" ]
+    out: [ "34512" ]
+  - in: [ "1", "2", "1101" ]
+    out: [ "14" ]
+  - in: [ "2", "10", "13408" ]
+    out: [ "8134" ]
+  - in: [ "3", "10", "13408" ]
+    out: [ "40813" ]
 
 publicTests:
   - name: Zero Rotation
-    in: ["0", "10", "12345"]
-    out: ["12345"]
+    in: [ "0", "10", "12345" ]
+    out: [ "12345" ]
   - name: Simple decimal case
-    in: ["4", "10", "7062545"]
-    out: ["2545706"]
+    in: [ "4", "10", "7062545" ]
+    out: [ "2545706" ]
   - name: Hex
-    in: ["2", "16", "ABCD"]
-    out: ["52651"]
+    in: [ "2", "16", "ABCD" ]
+    out: [ "52651" ]
   - name: Simple binary
-    in: ["1", "2", "101"]
-    out: ["6"]
+    in: [ "1", "2", "101" ]
+    out: [ "6" ]
   - name: Complex binary
-    in: ["12", "2", "111101101100111"]
-    out: ["23359"]
+    in: [ "12", "2", "111101101100111" ]
+    out: [ "23359" ]
   - name: Obscure base
-    in: ["3", "13", "A32B9"]
-    out: ["82943"]
+    in: [ "3", "13", "A32B9" ]
+    out: [ "82943" ]
   - name: Zero
-    in: ["4", "2", "0"]
-    out: ["0"]
+    in: [ "4", "2", "0" ]
+    out: [ "0" ]
   - name: Leading zero
-    in: ["1", "10", "24351490"]
-    out: ["2435149"]
+    in: [ "1", "10", "24351490" ]
+    out: [ "2435149" ]
   - name: Leading zeros
-    in: ["5", "16", "2A00028"]
-    out: ["10282"]
+    in: [ "5", "16", "2A00028" ]
+    out: [ "10282" ]
   - name: Skipping zeros
-    in: ["5", "8", "2340076"]
-    out: ["1052563"]
+    in: [ "5", "8", "2340076" ]
+    out: [ "1052563" ]
   - name: Single overflow rotation
-    in: ["4", "10", "123"]
-    out: ["312"]
+    in: [ "4", "10", "123" ]
+    out: [ "312" ]
   - name: Multi overflow rotation
-    in: ["2478395", "10", "123456"]
-    out: ["234561"]
+    in: [ "2478395", "10", "123456" ]
+    out: [ "234561" ]
 
 
 solution:

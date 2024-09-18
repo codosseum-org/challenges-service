@@ -14,26 +14,27 @@ import org.developerden.codosseum.server.Challenges
 
 @GenerateOpenApi
 fun Routing.getRandomChallenge() {
-	@KtorDescription("Get a random challenge")
-	@KtorResponds(
-		mapping = [
-			ResponseEntry("200", ChallengeInfo::class),
-			ResponseEntry("404", String::class)
-		]
-	)
-	get<Challenges.Random> { route ->
-		var challenge = ChallengesService.challenges
-		if (route.tagFilters.isNotEmpty()) {
-			challenge =
-				challenge.filter { it.info.tags.containsAll(route.tagFilters) }.toMutableSet() // should it be containsAll or containsAny?
-		}
-		if (route.difficultyFilters.isNotEmpty()) {
-			challenge = challenge.filter { route.difficultyFilters.contains(it.info.difficulty) }.toMutableSet()
-		}
-		if (challenge.isEmpty()) {
-			call.respondText("No challenges found with the given filters", status = HttpStatusCode.NotFound)
-		} else {
-			call.respond(challenge.random().info)
-		}
-	}
+  @KtorDescription("Get a random challenge")
+  @KtorResponds(
+    mapping = [
+      ResponseEntry("200", ChallengeInfo::class),
+      ResponseEntry("404", String::class)
+    ]
+  )
+  get<Challenges.Random> { route ->
+    var challenge = ChallengesService.challenges
+    if (route.tagFilters.isNotEmpty()) {
+      challenge =
+        challenge.filter { it.info.tags.containsAll(route.tagFilters) }
+          .toMutableSet() // should it be containsAll or containsAny?
+    }
+    if (route.difficultyFilters.isNotEmpty()) {
+      challenge = challenge.filter { route.difficultyFilters.contains(it.info.difficulty) }.toMutableSet()
+    }
+    if (challenge.isEmpty()) {
+      call.respondText("No challenges found with the given filters", status = HttpStatusCode.NotFound)
+    } else {
+      call.respond(challenge.random().info)
+    }
+  }
 }

@@ -7,7 +7,7 @@ import org.developerden.codosseum.challenge.ChallengeDifficulty
 @Resource("/validate")
 class Validate {
 
-	@Resource("/{title}")
+  @Resource("/{title}")
   class Title(
     val parent: Validate = Validate(),
     @KtorFieldDescription("Title of the challenge")

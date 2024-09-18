@@ -6,14 +6,14 @@ import org.developerden.codosseum.templatespiler.api.apis.DefaultApi
 import org.developerden.codosseum.templatespiler.api.models.TemplateParseRequest
 
 suspend fun validateTemplate(api: DefaultApi, challenge: Challenge): TemplateValidationResult {
-	val req = api.templateParsePost(
-		TemplateParseRequest(challenge.info.inputFormat, "unknown")
-	)
+  val req = api.templateParsePost(
+    TemplateParseRequest(challenge.info.inputFormat, "unknown")
+  )
 
-	if (req.success) {
-		return TemplateValidationResult(true, null)
-	}
-	return TemplateValidationResult(false, req.response.body())
+  if (req.success) {
+    return TemplateValidationResult(true, null)
+  }
+  return TemplateValidationResult(false, req.response.body())
 
 
 }

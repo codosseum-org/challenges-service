@@ -16,19 +16,19 @@ import kotlin.io.path.nameWithoutExtension
  */
 @Serializable
 data class Challenge(
-	val name: String,
-	val info: ChallengeInfo,
-	private val challengeFilePath: Path
+  val name: String,
+  val info: ChallengeInfo,
+  private val challengeFilePath: Path,
 ) {
-	val inputStream: InputStream
-		get() = challengeFilePath.inputStream()
+  val inputStream: InputStream
+    get() = challengeFilePath.inputStream()
 
-	val solutionInputStream: InputStream
-		get() = challengeFilePath.parent.resolve(info.solution.file).inputStream()
+  val solutionInputStream: InputStream
+    get() = challengeFilePath.parent.resolve(info.solution.file).inputStream()
 }
 
 fun Path.loadChallenge(): Challenge {
-	val challengeFile = resolve("challenge.yml")
-	val info = Yaml.default.decodeFromStream<ChallengeInfo>(challengeFile.inputStream())
-	return Challenge(nameWithoutExtension, info, challengeFile)
+  val challengeFile = resolve("challenge.yml")
+  val info = Yaml.default.decodeFromStream<ChallengeInfo>(challengeFile.inputStream())
+  return Challenge(nameWithoutExtension, info, challengeFile)
 }
