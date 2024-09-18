@@ -33,10 +33,10 @@ import org.koin.core.qualifier.Qualifier
  * @param parameters
  */
 inline fun <reified T : Any> Routing.inject(
-    qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
+  qualifier: Qualifier? = null,
+  noinline parameters: ParametersDefinition? = null,
 ) =
-    lazy { get<T>(qualifier, parameters) }
+  lazy { get<T>(qualifier, parameters) }
 
 /**
  * Retrieve given dependency for KoinComponent
@@ -44,17 +44,17 @@ inline fun <reified T : Any> Routing.inject(
  * @param parameters
  */
 inline fun <reified T : Any> Routing.get(
-    qualifier: Qualifier? = null,
-    noinline parameters: ParametersDefinition? = null
+  qualifier: Qualifier? = null,
+  noinline parameters: ParametersDefinition? = null,
 ) =
-    getKoin().get<T>(qualifier, parameters)
+  getKoin().get<T>(qualifier, parameters)
 
 /**
  * Retrieve given property for KoinComponent
  * @param key - key property
  */
 fun <T : Any> Routing.getProperty(key: String) =
-    getKoin().getProperty<T>(key)
+  getKoin().getProperty<T>(key)
 
 /**
  * Retrieve given property for KoinComponent
@@ -65,7 +65,7 @@ fun <T : Any> Routing.getProperty(key: String) =
  *
  */
 inline fun <reified T> Routing.getProperty(key: String, defaultValue: T) =
-    getKoin().getProperty(key) ?: defaultValue
+  getKoin().getProperty(key) ?: defaultValue
 
 /**
  * Help work on ModuleDefinition

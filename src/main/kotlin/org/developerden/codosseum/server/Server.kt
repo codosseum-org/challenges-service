@@ -75,7 +75,8 @@ fun Application.ktor() {
       single { json }
       single {
         json.decodeFromStream<ServiceConfiguration>(
-          Paths.get(System.getenv()["CONFIGURATION_PATH"] ?: "./challenges-service.json").inputStream())
+          Paths.get(System.getenv()["CONFIGURATION_PATH"] ?: "./challenges-service.json").inputStream()
+        )
       }
     })
   }

@@ -10,42 +10,42 @@ import org.developerden.codosseum.challenge.Challenge
 import org.developerden.codosseum.serializers.ValidationErrorSerializer
 
 fun validate(schema: String, challenge: Challenge): ChallengeSchemaValidationOutput {
-	val element = Load().loadOne(challenge.inputStream).toJsonElement()
+  val element = Load().loadOne(challenge.inputStream).toJsonElement()
 
-	val loader = JsonSchema.fromDefinition(schema)
+  val loader = JsonSchema.fromDefinition(schema)
 
-	val errors = mutableListOf<ValidationError>()
+  val errors = mutableListOf<ValidationError>()
 
-	val success = loader.validate(element, errors::add)
+  val success = loader.validate(element, errors::add)
 
-	return ChallengeSchemaValidationOutput(success, errors.toList())
+  return ChallengeSchemaValidationOutput(success, errors.toList())
 }
 
 private fun Any?.toJsonElement(): JsonElement {
-	return when (this) {
-		is Map<*, *> -> JsonObject(entries.associate { (key, value) -> "$key" to value.toJsonElement() })
-		is List<*> -> JsonArray(map(Any?::toJsonElement))
-		is Set<*> -> JsonArray(map(Any?::toJsonElement))
-		is Boolean -> JsonPrimitive(this)
-		is Number -> JsonPrimitive(this)
-		is String -> JsonPrimitive(this)
-		is ByteArray -> JsonPrimitive(encodeBase64())
-		null -> JsonNull
-		else -> error("Unexpected type: ${this::class.qualifiedName}")
-	}
+  return when (this) {
+    is Map<*, *> -> JsonObject(entries.associate { (key, value) -> "$key" to value.toJsonElement() })
+    is List<*> -> JsonArray(map(Any?::toJsonElement))
+    is Set<*> -> JsonArray(map(Any?::toJsonElement))
+    is Boolean -> JsonPrimitive(this)
+    is Number -> JsonPrimitive(this)
+    is String -> JsonPrimitive(this)
+    is ByteArray -> JsonPrimitive(encodeBase64())
+    null -> JsonNull
+    else -> error("Unexpected type: ${this::class.qualifiedName}")
+  }
 }
 
 @Serializable
 data class ChallengeSchemaValidationOutput(
-	val success: Boolean,
-	val errors: List<@Serializable(with = ValidationErrorSerializer::class) ValidationError>
+  val success: Boolean,
+  val errors: List<@Serializable(with = ValidationErrorSerializer::class) ValidationError>,
 )
 
 @Serializable
 data class ValidationResult(
-	val challengeName: String,
-	val schemaValidation: ChallengeSchemaValidationOutput,
-	val solutionValidation: SolutionValidationResult,
-	val templateValidation: TemplateValidationResult
+  val challengeName: String,
+  val schemaValidation: ChallengeSchemaValidationOutput,
+  val solutionValidation: SolutionValidationResult,
+  val templateValidation: TemplateValidationResult,
 )
 

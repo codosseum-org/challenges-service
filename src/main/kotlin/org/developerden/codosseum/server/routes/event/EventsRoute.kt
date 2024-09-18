@@ -14,35 +14,35 @@ import org.developerden.codosseum.server.Events
 import org.developerden.codosseum.server.koin.inject
 import org.developerden.codosseum.validation.FailedTest
 
-interface Event<T: Event<T>> {
-	val type: String
+interface Event<T : Event<T>> {
+  val type: String
 }
 
 @Serializable
 data class TestCompleteEvent(
-	val challengeName: String,
-	val testName: String,
-	val success: Boolean,
-	val failedTest: FailedTest?,
+  val challengeName: String,
+  val testName: String,
+  val success: Boolean,
+  val failedTest: FailedTest?,
 ) : Event<TestCompleteEvent> {
 
-	override val type: String
-		get() = "test_complete"
+  override val type: String
+    get() = "test_complete"
 }
 
 @GenerateOpenApi
 fun Routing.events() {
-	val eventBus by inject<EventBus>()
-	val json by inject<Json>()
+  val eventBus by inject<EventBus>()
+  val json by inject<Json>()
 
-	@KtorDescription("Subscribe to server sent events")
-	get<Events> {
-		sse {
-			eventBus.events.collectLatest { event ->
-				send(
-					ServerSentEvent(event = event.type, data = json.encodeToString(event))
-				)
-			}
-		}
-	}
+  @KtorDescription("Subscribe to server sent events")
+  get<Events> {
+    sse {
+      eventBus.events.collectLatest { event ->
+        send(
+          ServerSentEvent(event = event.type, data = json.encodeToString(event))
+        )
+      }
+    }
+  }
 }
