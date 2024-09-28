@@ -3,16 +3,17 @@ package org.developerden.codosseum
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.serialization.json.Json
 import org.developerden.codosseum.challenge.Challenge
-import org.developerden.codosseum.challenge.watching.remote.Repository
 import kotlin.coroutines.CoroutineContext
 
 object ChallengesService : CoroutineScope {
@@ -37,6 +38,12 @@ object ChallengesService : CoroutineScope {
       }
 
       this.level = LogLevel.INFO
+    }
+
+    install(ContentNegotiation) {
+      json(Json {
+        ignoreUnknownKeys = true
+      })
     }
   }
 }
