@@ -1,0 +1,20 @@
+{
+  "watching": {
+    "local": [
+
+    ],
+    "remote": {
+      "updateTimePeriod": 3600000,
+      "repositories": [
+        {
+          "owner": "codosseum",
+          "repo": "challenges",
+          "remote": "origin",
+          "branch": "main",
+          "url": "https://github.com/codosseum/challenges/tree/branch"
+        }
+      ],
+      "githubToken": "GITHUB_TOKEN"
+    }
+  }
+}
