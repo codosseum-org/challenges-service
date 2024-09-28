@@ -28,7 +28,6 @@ dependencies {
   implementation(libs.snakeyaml)
   implementation(libs.bundles.koin)
   implementation(libs.bundles.ktor)
-  implementation(libs.kotlinx.hocon)
   implementation(libs.bundles.logging)
   implementation(libs.bundles.kotlinx)
   implementation(libs.bundles.jackson)
