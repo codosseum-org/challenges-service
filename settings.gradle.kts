@@ -22,7 +22,7 @@ dependencyResolutionManagement {
       ).versionRef("serialization")
 
       library("kotlinx.coroutines", "org.jetbrains.kotlinx", "kotlinx-coroutines-core").versionRef("coroutines")
-      library("kotlinx.hocon", "org.jetbrains.kotlinx", "kotlinx-serialization-hocon").versionRef("serialization")
+      library("kotlinx.serialization", "org.jetbrains.kotlinx", "kotlinx-serialization-json").versionRef("serialization")
 
       bundle(
         "kotlinx",
