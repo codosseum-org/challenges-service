@@ -1,7 +1,7 @@
 package org.developerden.codosseum
 
 import kotlinx.serialization.Serializable
-import org.developerden.codosseum.challenge.watching.remote.Repository
+import org.developerden.codosseum.challenge.source.remote.Repository
 
 @Serializable
 data class ServiceConfiguration(
@@ -10,7 +10,6 @@ data class ServiceConfiguration(
 
   @Serializable
   data class Watching(
-    val storingDirectory: String,
     val local: Collection<String>,
     val remote: Remote,
   ) {
@@ -19,6 +18,7 @@ data class ServiceConfiguration(
     data class Remote(
       val updateTimePeriod: Long,
       val repositories: Collection<Repository>,
+      val githubToken: String
     )
   }
 }
