@@ -31,6 +31,7 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation as ServerCon
 @ExperimentalSerializationApi
 fun Application.ktor() {
   val json = Json {
+    ignoreUnknownKeys = true
     serializersModule = (SerializersModule {
       contextual(UUIDSerializer)
     })
