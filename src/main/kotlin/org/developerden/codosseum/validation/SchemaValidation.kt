@@ -9,10 +9,10 @@ import kotlinx.serialization.json.*
 import org.developerden.codosseum.challenge.Challenge
 import org.developerden.codosseum.serializers.ValidationErrorSerializer
 
-fun validate(schema: String, challenge: Challenge): ChallengeSchemaValidationOutput {
-  val element = Load().loadOne(challenge.inputStream).toJsonElement()
+fun Challenge.validate(): ChallengeSchemaValidationOutput {
+  val element = Load().loadOne(inputStream).toJsonElement()
 
-  val loader = JsonSchema.fromDefinition(schema)
+  val loader = JsonSchema.fromDefinition(info.schema)
 
   val errors = mutableListOf<ValidationError>()
 
