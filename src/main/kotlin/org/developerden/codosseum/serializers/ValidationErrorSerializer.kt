@@ -24,15 +24,15 @@ object ValidationErrorSerializer : KSerializer<ValidationError> {
 
   override fun deserialize(decoder: Decoder): ValidationError {
     return decoder.decodeStructure(descriptor) {
-      var schemaPath: JsonPointer? = null
-      var objectPath: JsonPointer? = null
-      var message: String? = null
-      var details: Map<String, String>? = null
+      var schemaPath: JsonPointer = JsonPointer.ROOT
+      var objectPath: JsonPointer = JsonPointer.ROOT
+      var message: String = ""
+      var details: Map<String, String> = HashMap()
       var absoluteLocation: AbsoluteLocation? = null
 
-      loop@ while (true) {
+     while (true) {
         when (val index = decodeElementIndex(descriptor)) {
-          CompositeDecoder.DECODE_DONE -> break@loop
+          CompositeDecoder.DECODE_DONE -> break
           0 -> schemaPath = decodeSerializableElement(descriptor, index, JsonPointer.serializer())
           1 -> objectPath = decodeSerializableElement(descriptor, index, JsonPointer.serializer())
           2 -> message = decodeStringElement(descriptor, index)
@@ -42,20 +42,20 @@ object ValidationErrorSerializer : KSerializer<ValidationError> {
             MapSerializer(String.serializer(), String.serializer())
           )
 
-          4 -> absoluteLocation =
-            decodeSerializableElement(descriptor, index, AbsoluteLocation.serializer().nullable)
+          4 -> absoluteLocation = decodeSerializableElement(descriptor, index, AbsoluteLocation.serializer())
 
           else -> error("Unexpected index: $index")
         }
       }
-
+      
       ValidationError(
-        schemaPath = schemaPath!!,
-        objectPath = objectPath!!,
-        message = message!!,
-        details = details!!,
-        absoluteLocation = absoluteLocation!!
+        schemaPath = schemaPath,
+        objectPath = objectPath,
+        message = message,
+        details = details,
+        absoluteLocation = absoluteLocation
       )
+
     }
   }
 
