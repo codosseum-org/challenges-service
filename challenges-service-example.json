@@ -1,7 +1,8 @@
 {
   "watching": {
     "local": [
-
+      "paul",
+      "johnny"
     ],
     "remote": {
       "updateTimePeriod": 3600000,
