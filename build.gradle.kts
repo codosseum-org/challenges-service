@@ -12,7 +12,7 @@ plugins {
   checkstyle
 }
 
-version = "0.1-b"
+version = "0.0.1"
 val javaVersion = JavaVersion.VERSION_21
 
 repositories {
@@ -120,9 +120,16 @@ sourceSets {
 
 swagger {
   documentation {
-    docsTitle = "Codosseum Challenges Service"
-    docsVersion = version.toString()
     generateRequestSchemas = true
+    hideTransientFields = true
+    hidePrivateAndInternalFields = true
+    deriveFieldRequirementFromTypeNullability = true
+
+    info {
+      title = "Codosseum Challenges Service"
+      description = "Service used to index and validate challenges."
+      version = project.version.toString()
+    }
   }
 
   pluginOptions {
