@@ -8,7 +8,6 @@ import io.ktor.server.sse.*
 import io.ktor.sse.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.developerden.codosseum.server.Events
 import org.developerden.codosseum.server.koin.inject

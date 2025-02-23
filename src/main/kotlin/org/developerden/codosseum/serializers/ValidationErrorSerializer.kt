@@ -30,7 +30,7 @@ object ValidationErrorSerializer : KSerializer<ValidationError> {
       var details: Map<String, String> = HashMap()
       var absoluteLocation: AbsoluteLocation? = null
 
-     while (true) {
+      while (true) {
         when (val index = decodeElementIndex(descriptor)) {
           CompositeDecoder.DECODE_DONE -> break
           0 -> schemaPath = decodeSerializableElement(descriptor, index, JsonPointer.serializer())
@@ -47,7 +47,7 @@ object ValidationErrorSerializer : KSerializer<ValidationError> {
           else -> error("Unexpected index: $index")
         }
       }
-      
+
       ValidationError(
         schemaPath = schemaPath,
         objectPath = objectPath,

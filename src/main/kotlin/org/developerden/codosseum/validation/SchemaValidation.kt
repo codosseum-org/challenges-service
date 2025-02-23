@@ -6,11 +6,12 @@ import io.ktor.util.*
 import it.krzeminski.snakeyaml.engine.kmp.api.Load
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.*
-import org.developerden.codosseum.challenge.Challenge
+import org.developerden.codosseum.indexing.challenge.Challenge
 import org.developerden.codosseum.serializers.ValidationErrorSerializer
+import kotlin.io.path.inputStream
 
 fun Challenge.validate(): ChallengeSchemaValidationOutput {
-  val element = Load().loadOne(inputStream).toJsonElement()
+  val element = Load().loadOne(challengePath.inputStream()).toJsonElement()
 
   val loader = JsonSchema.fromDefinition(info.schema)
 

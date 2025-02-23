@@ -1,7 +1,11 @@
 package org.developerden.codosseum.server
 
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.logging.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import io.ktor.server.metrics.micrometer.*
 import io.ktor.server.plugins.swagger.*
 import io.ktor.server.resources.*
 import io.ktor.server.routing.*
@@ -11,15 +15,17 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
+import org.developerden.codosseum.ChallengesService
 import org.developerden.codosseum.ServiceConfiguration
-import org.developerden.codosseum.sandkasten.api.apis.ProgramsApi
-import org.developerden.codosseum.serializers.UUIDSerializer
+import org.developerden.codosseum.server.generated.sandkasten
+import org.developerden.codosseum.server.generated.templatespiler
 import org.developerden.codosseum.server.koin.FixedKoin
+import org.developerden.codosseum.server.routes.challenges.randomChallenge
 import org.developerden.codosseum.server.routes.event.EventBus
 import org.developerden.codosseum.server.routes.event.events
-import org.developerden.codosseum.server.routes.getRandomChallenge
-import org.developerden.codosseum.server.routes.validate
-import org.developerden.codosseum.templatespiler.api.apis.DefaultApi
+import org.developerden.codosseum.server.routes.validation.validationSummary
+import org.developerden.codosseum.serializers.UUIDSerializer
+import org.developerden.codosseum.serializers.ValidationErrorSerializer
 import org.developerden.codosseum.validation.SolutionValidationService
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -28,27 +34,31 @@ import kotlin.io.path.inputStream
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientContentNegotiation
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation as ServerContentNegotiation
 
-@ExperimentalSerializationApi
-fun Application.ktor() {
+@OptIn(ExperimentalSerializationApi::class)
+fun Application.server() {
   val json = Json {
     ignoreUnknownKeys = true
+    encodeDefaults = true
+    explicitNulls = true
     serializersModule = (SerializersModule {
       contextual(UUIDSerializer)
+      contextual(ValidationErrorSerializer)
     })
   }
 
   install(ServerContentNegotiation) {
     json(json)
   }
+
   install(Resources)
 
-  //install(MicrometerMetrics)
+  //install(MicrometerMetrics) Are we using prometheus?
 
   install(SSE)
 
   routing {
-    validate()
-    getRandomChallenge()
+    validationSummary()
+    randomChallenge()
     events()
     swaggerUI("swagger", "openapi/openapi.yaml") {
       version = "5.17.14"
@@ -57,27 +67,33 @@ fun Application.ktor() {
 
   install(FixedKoin) {
     modules(module {
-      single {
-        ProgramsApi("https://sandkasten.developerden.org", httpClientConfig = {
-          it.install(ClientContentNegotiation) {
-            json(json)
-          }
-        })
-      }
-      single {
-        DefaultApi("https://templatespiler-codosseum.developerden.org", httpClientConfig = {
-          it.install(ClientContentNegotiation) {
-            json(json)
-          }
-        })
-      }
-      singleOf(::SolutionValidationService)
-      singleOf(::EventBus)
       single { json }
-      single {
+
+      single { sandkasten(json) }
+      single { templatespiler(json) }
+
+      factory {
         json.decodeFromStream<ServiceConfiguration>(
           Paths.get(System.getenv()["CONFIGURATION_PATH"] ?: "./challenges-service.json").inputStream()
         )
+      }
+
+      singleOf(::EventBus)
+      singleOf(::SolutionValidationService)
+
+      single {
+        HttpClient(CIO) {
+          expectSuccess = true
+
+          install(Logging) {
+            this.logger = object : Logger {
+              override fun log(message: String) = ChallengesService.logger.debug { message }
+            }
+          }
+          install(ClientContentNegotiation) {
+            json(json)
+          }
+        }
       }
     })
   }

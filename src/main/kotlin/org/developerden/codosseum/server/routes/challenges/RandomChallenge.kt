@@ -1,4 +1,4 @@
-package org.developerden.codosseum.server.routes
+package org.developerden.codosseum.server.routes.challenges
 
 import io.github.tabilzad.ktor.annotations.GenerateOpenApi
 import io.github.tabilzad.ktor.annotations.KtorDescription
@@ -8,33 +8,32 @@ import io.ktor.http.*
 import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.developerden.codosseum.ChallengesService
-import org.developerden.codosseum.challenge.ChallengeInfo
+import org.developerden.codosseum.indexing.challenge.Challenge
 import org.developerden.codosseum.server.Challenges
 
 @GenerateOpenApi
-fun Routing.getRandomChallenge() {
+fun Routing.randomChallenge() {
   @KtorDescription("Get a random challenge")
   @KtorResponds(
     mapping = [
-      ResponseEntry("200", ChallengeInfo::class),
+      ResponseEntry("200", Challenge.Info::class),
       ResponseEntry("404", String::class)
     ]
   )
   get<Challenges.Random> { route ->
-    var challenge = ChallengesService.challenges
+    var challenges: Set<Challenge> = setOf()
     if (route.tagFilters.isNotEmpty()) {
-      challenge =
-        challenge.filter { it.info.tags.containsAll(route.tagFilters) }
-          .toMutableSet() // should it be containsAll or containsAny?
+      challenges =
+        challenges.filter { it.info.tags.any { tag -> route.tagFilters.contains(tag) } }
+          .toMutableSet() // should it be containsAll or containsAny? any :D
     }
     if (route.difficultyFilters.isNotEmpty()) {
-      challenge = challenge.filter { route.difficultyFilters.contains(it.info.difficulty) }.toMutableSet()
+      challenges = challenges.filter { route.difficultyFilters.contains(it.info.difficulty) }.toMutableSet()
     }
-    if (challenge.isEmpty()) {
+    if (challenges.isEmpty()) {
       call.respondText("No challenges found with the given filters", status = HttpStatusCode.NotFound)
     } else {
-      call.respond(challenge.random().info)
+      call.respond(challenges.random().info)
     }
   }
 }
