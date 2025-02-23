@@ -3,17 +3,17 @@ rootProject.name = "challenges-service"
 dependencyResolutionManagement {
   versionCatalogs {
     create("libs") {
-      version("kotlin", "2.0.0")
-      version("ktor", "3.0.0-beta-2")
+      version("kotlin", "2.1.10")
+      version("ktor", "3.1.0")
 
       plugin("ktor", "io.ktor.plugin").versionRef("ktor")
       plugin("jvm", "org.jetbrains.kotlin.jvm").versionRef("kotlin")
-      plugin("openapi", "org.openapi.generator").version("7.8.0")
+      plugin("openapi", "org.openapi.generator").version("7.10.0")
       plugin("serialization", "org.jetbrains.kotlin.plugin.serialization").versionRef("kotlin")
-      plugin("ktorOpenapi", "io.github.tabilzad.ktor-docs-plugin-gradle").version("0.6.2-alpha")
+      plugin("ktorOpenapi", "io.github.tabilzad.inspektor").version("0.7.2-alpha")
 
-      version("coroutines", "1.9.0")
-      version("serialization", "1.7.2")
+      version("coroutines", "1.10.1")
+      version("serialization", "1.8.0")
 
       library(
         "kotlinx.serialization",
@@ -22,11 +22,14 @@ dependencyResolutionManagement {
       ).versionRef("serialization")
 
       library("kotlinx.coroutines", "org.jetbrains.kotlinx", "kotlinx-coroutines-core").versionRef("coroutines")
-      library("kotlinx.serialization", "org.jetbrains.kotlinx", "kotlinx-serialization-json").versionRef("serialization")
+      library(
+        "kotlinx.serialization",
+        "org.jetbrains.kotlinx",
+        "kotlinx-serialization-json"
+      ).versionRef("serialization")
 
       bundle(
-        "kotlinx",
-        listOf(
+        "kotlinx", listOf(
           "kotlinx.serialization",
           "kotlinx.coroutines"
         )
@@ -73,7 +76,7 @@ dependencyResolutionManagement {
         )
       )
 
-      version("koin", "4.0.0-RC2")
+      version("koin", "4.1.0-Beta5")
       library("koin", "io.insert-koin", "koin-core").versionRef("koin")
       library("koin.ktor", "io.insert-koin", "koin-ktor").versionRef("koin")
 
@@ -83,25 +86,26 @@ dependencyResolutionManagement {
 
       library("jgit", "org.eclipse.jgit", "org.eclipse.jgit").version("7.0.0.202409031743-r")
 
-      version("logback", "1.5.8")
-      version("kotlin-logging", "7.0.0")
+      version("logback", "1.5.16")
+      version("kotlin-logging", "7.0.4")
 
       library("logging.logback", "ch.qos.logback", "logback-classic").versionRef("logback")
       library("logging.kotlin", "io.github.oshai", "kotlin-logging-jvm").versionRef("kotlin-logging")
 
       bundle("logging", listOf("logging.logback", "logging.kotlin"))
 
-      library("schema", "io.github.optimumcode", "json-schema-validator").version("0.2.3")
-      library("snakeyaml", "it.krzeminski", "snakeyaml-engine-kmp").version("3.0.2")
-      library("kaml", "com.charleskorn.kaml", "kaml").version("0.61.0")
+      library("schema", "io.github.optimumcode", "json-schema-validator").version("0.4.0")
+      library("snakeyaml", "it.krzeminski", "snakeyaml-engine-kmp").version("3.1.1")
+      library("kaml", "com.charleskorn.kaml", "kaml").version("0.72.0")
 
-      version("jackson", "2.17.2")
+      version("jackson", "2.18.2")
       library("jackson-core", "com.fasterxml.jackson.core", "jackson-core").versionRef("jackson")
       library("jackson-db", "com.fasterxml.jackson.core", "jackson-databind").versionRef("jackson")
+      library("jackson-kotlin", "com.fasterxml.jackson.module", "jackson-module-kotlin").versionRef("jackson")
       library("jackson-annotations", "com.fasterxml.jackson.core", "jackson-annotations").versionRef("jackson")
       library("jackson-yaml", "com.fasterxml.jackson.dataformat", "jackson-dataformat-yaml").versionRef("jackson")
 
-      bundle("jackson", listOf("jackson-db", "jackson-core", "jackson-annotations", "jackson-yaml"))
+      bundle("jackson", listOf("jackson-db", "jackson-core", "jackson-annotations", "jackson-yaml", "jackson-kotlin"))
 
     }
   }
