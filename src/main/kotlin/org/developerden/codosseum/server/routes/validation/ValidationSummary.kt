@@ -1,22 +1,21 @@
-package org.developerden.codosseum.server.routes
+package org.developerden.codosseum.server.routes.validation
 
+import io.github.oshai.kotlinlogging.KLogger
 import io.github.tabilzad.ktor.annotations.GenerateOpenApi
 import io.github.tabilzad.ktor.annotations.KtorDescription
 import io.github.tabilzad.ktor.annotations.KtorResponds
 import io.github.tabilzad.ktor.annotations.ResponseEntry
-import io.ktor.http.*
 import io.ktor.server.resources.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.developerden.codosseum.ChallengesService
 import org.developerden.codosseum.server.Validate
 import org.developerden.codosseum.server.koin.inject
 import org.developerden.codosseum.validation.SolutionValidationService
 import org.developerden.codosseum.validation.ValidationResult
 
 @GenerateOpenApi
-fun Routing.validate() {
+fun Routing.validationSummary() {
   val validation by inject<SolutionValidationService>()
+  val logger by inject<KLogger>()
 
   @KtorDescription("Validate a challenge")
   @KtorResponds(
@@ -26,14 +25,6 @@ fun Routing.validate() {
     ]
   )
   get<Validate.Title> { route ->
-    ChallengesService.logger.info { "Validating challenge ${route.title}" }
-    val found = ChallengesService.challenges.first()
-
-    if (found == null) {
-      call.respond(HttpStatusCode.NotFound, "Challenge not found with title ${route.title}")
-      return@get
-    }
-    val (stored, challenge) = found
 
   }
 }

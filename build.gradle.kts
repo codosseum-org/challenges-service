@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-  //implementation(libs.jgit)
+  implementation(libs.jgit)
   implementation(libs.kaml)
   implementation(libs.schema)
   implementation(libs.kfswatch)
@@ -31,11 +31,7 @@ dependencies {
   implementation(libs.bundles.logging)
   implementation(libs.bundles.kotlinx)
   implementation(libs.bundles.jackson)
-
-  implementation("org.kohsuke:github-api:2.0.0-alpha-1")
-  implementation("io.ktor:ktor-client-java:3.0.0-beta-2")
-  implementation("io.ktor:ktor-client-cio-jvm:3.0.0-beta-2")
-
+  
   testImplementation(kotlin("test"))
 }
 
@@ -95,7 +91,6 @@ val generateTemplatespiler by tasks.registering(GenerateTask::class) {
   inputSpec.set("templatespiler-spec.json")
   packageName.set("org.developerden.codosseum.templatespiler.api")
 }
-
 
 task<Exec>("generateAndFix") {
   val file = if (OperatingSystem.current().isMacOsX) "./fix-generated-macos.sh" else "./fix-generated-linux.sh"
