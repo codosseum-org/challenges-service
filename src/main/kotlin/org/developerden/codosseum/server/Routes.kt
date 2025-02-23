@@ -1,11 +1,8 @@
 package org.developerden.codosseum.server
 
 import io.github.tabilzad.ktor.annotations.KtorFieldDescription
-import io.github.tabilzad.ktor.annotations.Tag
 import io.ktor.resources.*
-import io.micrometer.core.instrument.config.validate.Validated.Valid
-import org.developerden.codosseum.indexing.challenge.Challenge
-import kotlin.reflect.jvm.internal.ReflectProperties.Val
+import org.developerden.codosseum.indexing.Challenge
 
 @Resource("/validate")
 class Validate {

@@ -8,17 +8,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import org.developerden.codosseum.ChallengesService
-import org.developerden.codosseum.indexing.challenge.Challenge
+import org.developerden.codosseum.indexing.Challenge
 import org.developerden.codosseum.sandkasten.api.apis.ProgramsApi
 import org.developerden.codosseum.sandkasten.api.models.BuildRequest
 import org.developerden.codosseum.sandkasten.api.models.BuildRequestMainFile
 import org.developerden.codosseum.sandkasten.api.models.RunRequest
 import org.developerden.codosseum.server.routes.event.EventBus
 import org.developerden.codosseum.server.routes.event.TestCompleteEvent
-import org.koin.core.Koin
-import org.koin.core.context.GlobalContext
-import org.koin.ktor.plugin.Koin
-import kotlin.coroutines.CoroutineContext
 import kotlin.io.path.inputStream
 
 suspend fun Challenge.validateSolutions(

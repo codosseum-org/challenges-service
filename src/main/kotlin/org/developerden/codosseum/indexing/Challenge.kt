@@ -1,4 +1,4 @@
-package org.developerden.codosseum.indexing.challenge
+package org.developerden.codosseum.indexing
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
