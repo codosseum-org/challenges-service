@@ -8,7 +8,7 @@ import io.ktor.http.*
 import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.developerden.codosseum.indexing.challenge.Challenge
+import org.developerden.codosseum.indexing.Challenge
 import org.developerden.codosseum.server.Challenges
 
 @GenerateOpenApi
