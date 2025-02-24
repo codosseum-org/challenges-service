@@ -1,5 +1,4 @@
 import io.ktor.plugin.features.*
-import org.gradle.internal.os.OperatingSystem
 import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 
 plugins {
