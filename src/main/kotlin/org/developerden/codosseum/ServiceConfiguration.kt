@@ -5,7 +5,6 @@ import org.developerden.codosseum.indexing.git.Repository
 
 @Serializable
 data class ServiceConfiguration(
-  val debug: Boolean = false,
   val indexing: Indexing,
 ) {
 
