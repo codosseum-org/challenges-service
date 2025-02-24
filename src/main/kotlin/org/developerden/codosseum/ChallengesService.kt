@@ -5,6 +5,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.server.cio.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import org.developerden.codosseum.indexing.Indexed
 import kotlin.coroutines.CoroutineContext
 
 object ChallengesService {
@@ -15,6 +16,7 @@ object ChallengesService {
   val coroutineContext: CoroutineContext
     get() = Dispatchers.Default + job
 
+  val indexed: MutableSet<Indexed> = mutableSetOf()
 }
 
 fun main(args: Array<String>) = EngineMain.main(args)

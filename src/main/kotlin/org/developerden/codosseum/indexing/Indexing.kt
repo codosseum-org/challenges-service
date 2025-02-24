@@ -1,5 +1,8 @@
 package org.developerden.codosseum.indexing
 
+import org.developerden.codosseum.ChallengesService
+import org.developerden.codosseum.ServiceConfiguration
+import org.developerden.codosseum.indexing.git.RemoteIndexing
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.exists
@@ -22,8 +25,21 @@ abstract class Indexing<F> {
   }
 }
 
-
 data class Indexed(
   val schema: Path? = null,
   val challengeDirectory: Path,
 )
+
+suspend fun indexChallenges(indexing: ServiceConfiguration.Indexing) {
+  indexing.remote.repositories.map {
+    ChallengesService.logger.debug { "Indexing repo '${it.name}'..." }
+    ChallengesService.indexed.addAll(RemoteIndexing.collectIndexedPaths(it))
+  }
+
+  ChallengesService.logger.debug { "Indexing local path '${indexing.local.path}'..." }
+  val localIndexing = object : Indexing<Path>() {
+    override suspend fun index(source: Path): Path = source
+  }
+
+  ChallengesService.indexed.addAll(localIndexing.collectIndexedPaths(Path(indexing.local.path)))
+}

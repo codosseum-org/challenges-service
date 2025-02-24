@@ -10,7 +10,7 @@ import kotlin.io.path.createParentDirectories
 import kotlin.io.path.notExists
 import org.developerden.codosseum.indexing.git.Repository as GitSource
 
-class RemoteIndexing : Indexing<GitSource>() {
+object RemoteIndexing : Indexing<GitSource>() {
 
   override suspend fun index(source: GitSource): Path {
     val repositoryPath = Path("./challenges/git/${source.name}/")

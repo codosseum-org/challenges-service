@@ -16,7 +16,7 @@ data class ServiceConfiguration(
 
     @Serializable
     data class Local(
-      val paths: String,
+      val path: String,
       val updateOnChange: Boolean = true,
       val updateTimePeriod: Long? = null
     )
