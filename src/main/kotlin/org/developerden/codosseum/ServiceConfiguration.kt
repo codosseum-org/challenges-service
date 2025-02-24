@@ -1,7 +1,7 @@
 package org.developerden.codosseum
 
 import kotlinx.serialization.Serializable
-import org.developerden.codosseum.indexing.remote.Repository
+import org.developerden.codosseum.indexing.git.Repository
 
 @Serializable
 data class ServiceConfiguration(
@@ -17,7 +17,7 @@ data class ServiceConfiguration(
 
     @Serializable
     data class Local(
-      val paths: Collection<String>,
+      val paths: String,
       val updateOnChange: Boolean = true,
       val updateTimePeriod: Long? = null
     )
