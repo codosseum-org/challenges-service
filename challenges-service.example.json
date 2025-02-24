@@ -1,7 +1,7 @@
 {
   "indexing": {
     "local": {
-      "paths": "./challenges/local/",
+      "path": "./challenges/local/",
       "updateOnChange": true,
       "updateTimePeriod": null
     },
