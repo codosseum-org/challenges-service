@@ -1,5 +1,4 @@
 {
-  "debug": true,
   "indexing": {
     "local": {
       "paths": "./challenges/local/",
