@@ -8,7 +8,7 @@ dependencyResolutionManagement {
 
       plugin("ktor", "io.ktor.plugin").versionRef("ktor")
       plugin("jvm", "org.jetbrains.kotlin.jvm").versionRef("kotlin")
-      plugin("openapi", "org.openapi.generator").version("7.10.0")
+      plugin("openapi", "org.openapi.generator").version("7.11.0")
       plugin("serialization", "org.jetbrains.kotlin.plugin.serialization").versionRef("kotlin")
       plugin("ktorOpenapi", "io.github.tabilzad.inspektor").version("0.7.2-alpha")
 

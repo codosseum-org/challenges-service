@@ -62,7 +62,6 @@ tasks.test {
   useJUnitPlatform()
 }
 
-
 kotlin {
   jvmToolchain(javaVersion.majorVersion.toInt())
 }
@@ -92,16 +91,8 @@ val generateTemplatespiler by tasks.registering(GenerateTask::class) {
   packageName.set("org.developerden.codosseum.templatespiler.api")
 }
 
-task<Exec>("generateAndFix") {
-  val file = if (OperatingSystem.current().isMacOsX) "./fix-generated-macos.sh" else "./fix-generated-linux.sh"
-  commandLine(file)
-    .workingDir(project.projectDir)
-
-  dependsOn(generateSandkasten, generateTemplatespiler)
-}
-
 tasks.compileKotlin {
-  dependsOn("generateAndFix")
+  dependsOn(generateSandkasten, generateTemplatespiler)
 }
 
 sourceSets {
