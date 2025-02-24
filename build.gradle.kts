@@ -48,9 +48,9 @@ ktor {
     portMappings.set(
       listOf(
         DockerPortMapping(
-          80,
+          providers.environmentVariable("CHALLENGES_SERVICE_PORT").getOrElse("6543").toInt(),
           8080,
-          DockerPortMappingProtocol.TCP
+          DockerPortMappingProtocol.TCP,
         )
       )
     )
