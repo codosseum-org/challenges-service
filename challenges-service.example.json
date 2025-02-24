@@ -1,0 +1,22 @@
+{
+  "debug": true,
+  "indexing": {
+    "local": {
+      "paths": "./challenges/local/",
+      "updateOnChange": true,
+      "updateTimePeriod": null
+    },
+    "remote": {
+      "updateTimePeriod": 180000,
+      "repositories": [
+        {
+          "name": "Base Challenges Repo",
+          "owner": "codosseum-org",
+          "url": "https://github.com/codosseum-org/challenges.git",
+          "branch": "main",
+          "accessToken": "token"
+        }
+      ]
+    }
+  }
+}
