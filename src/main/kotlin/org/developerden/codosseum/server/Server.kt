@@ -5,7 +5,6 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
-import io.ktor.server.metrics.micrometer.*
 import io.ktor.server.plugins.swagger.*
 import io.ktor.server.resources.*
 import io.ktor.server.routing.*
@@ -52,7 +51,10 @@ fun Application.server() {
 
   install(Resources)
 
-  //install(MicrometerMetrics) Are we using prometheus?
+  /**
+   * install(MicrometerMetrics)
+   * TODO: Are we using prometheus?
+   */
 
   install(SSE)
 

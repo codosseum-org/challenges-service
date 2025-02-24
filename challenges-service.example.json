@@ -14,7 +14,7 @@
           "owner": "codosseum-org",
           "url": "https://github.com/codosseum-org/challenges.git",
           "branch": "main",
-          "accessToken": "token"
+          "accessTokenEnv": "CODOSSEUM_ACCESS_TOKEN"
         }
       ]
     }
