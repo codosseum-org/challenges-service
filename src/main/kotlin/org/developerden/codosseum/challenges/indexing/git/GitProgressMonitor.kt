@@ -1,4 +1,4 @@
-package org.developerden.codosseum.indexing.git
+package org.developerden.codosseum.challenges.indexing.git
 
 import org.developerden.codosseum.ChallengesService
 import org.eclipse.jgit.lib.ProgressMonitor

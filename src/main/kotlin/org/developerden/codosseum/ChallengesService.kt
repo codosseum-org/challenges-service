@@ -5,7 +5,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.server.cio.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import org.developerden.codosseum.indexing.Indexed
+import org.developerden.codosseum.challenges.indexing.Indexed
 import kotlin.coroutines.CoroutineContext
 
 object ChallengesService {
