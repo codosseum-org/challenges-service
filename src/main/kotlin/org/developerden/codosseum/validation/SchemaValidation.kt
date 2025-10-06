@@ -12,7 +12,7 @@ import java.net.URI
 import java.nio.file.Files
 import kotlin.io.path.inputStream
 
-fun Challenge.validate(): ChallengeSchemaValidationOutput {
+fun Challenge.validateSchema(): ChallengeSchemaValidationOutput {
     val element = Load().loadOne(challengePath.inputStream()).toJsonElement()
 
     val schema = fetchSchemaByUriString(info.schema) ?: throw IllegalArgumentException("Schema not found")
@@ -70,11 +70,5 @@ data class ChallengeSchemaValidationOutput(
     val errors: List<@Serializable(with = ValidationErrorSerializer::class) ValidationError>,
 )
 
-@Serializable
-data class ValidationResult(
-    val challengeName: String,
-    val schemaValidation: ChallengeSchemaValidationOutput,
-    val solutionValidation: SolutionValidationResult,
-    val templateValidation: TemplateValidationResult,
-)
+
 

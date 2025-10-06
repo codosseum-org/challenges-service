@@ -33,6 +33,7 @@ import org.developerden.codosseum.server.routes.challenges.randomChallenge
 import org.developerden.codosseum.server.routes.event.EventBus
 import org.developerden.codosseum.server.routes.event.events
 import org.developerden.codosseum.server.routes.validation.validationSummary
+import org.developerden.codosseum.validation.ChallengeValidationService
 import org.developerden.codosseum.validation.SolutionValidationService
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
@@ -97,6 +98,7 @@ fun Application.server() {
             singleOf(::ChallengeStorage)
             singleOf(::ChannelBasedChallengeQueue) bind ChallengeQueue::class
             singleOf(::ChallengeWorker)
+            singleOf(::ChallengeValidationService)
 
             single {
                 HttpClient(CIO) {

@@ -8,9 +8,9 @@ import io.github.tabilzad.ktor.annotations.ResponseEntry
 import io.ktor.server.resources.*
 import io.ktor.server.routing.*
 import org.developerden.codosseum.server.Validate
+import org.developerden.codosseum.validation.ChallengeValidationService
 
 import org.developerden.codosseum.validation.SolutionValidationService
-import org.developerden.codosseum.validation.ValidationResult
 import org.koin.ktor.ext.inject
 
 @GenerateOpenApi
@@ -21,7 +21,7 @@ fun Routing.validationSummary() {
     @KtorDescription("Validate a challenge")
     @KtorResponds(
         mapping = [
-            ResponseEntry("200", ValidationResult::class),
+            ResponseEntry("200", ChallengeValidationService.ValidationResult::class),
             ResponseEntry("404", String::class)
         ]
     )
