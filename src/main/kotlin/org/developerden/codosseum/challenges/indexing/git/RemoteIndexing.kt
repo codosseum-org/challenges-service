@@ -2,7 +2,6 @@ package org.developerden.codosseum.challenges.indexing.git
 
 import org.developerden.codosseum.challenges.indexing.ChallengeSourceID
 import org.developerden.codosseum.challenges.indexing.Indexing
-import org.developerden.codosseum.sandkasten.api.apis.ConfigurationApi
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider
 import java.nio.file.Path

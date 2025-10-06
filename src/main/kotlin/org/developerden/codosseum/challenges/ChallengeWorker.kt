@@ -6,11 +6,14 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.developerden.codosseum.challenges.indexing.ChallengeQueue
-import org.developerden.codosseum.challenges.indexing.Indexed
 import org.developerden.codosseum.challenges.storage.ChallengeStorage
-import org.developerden.codosseum.validation.validate
+import org.developerden.codosseum.validation.ChallengeValidationService
 
-class ChallengeWorker(val challengeQueue: ChallengeQueue, val challengeStorage: ChallengeStorage) {
+class ChallengeWorker(
+    val challengeQueue: ChallengeQueue,
+    val challengeStorage: ChallengeStorage,
+    val validationService: ChallengeValidationService
+) {
     private val logger = KotlinLogging.logger {}
     private var job: Job? = null
     fun start(scope: CoroutineScope) {
@@ -19,12 +22,21 @@ class ChallengeWorker(val challengeQueue: ChallengeQueue, val challengeStorage: 
         job = scope.launch {
             while (isActive) {
                 try {
+                    logger.debug { "Polling challenge queue" }
                     val msg = challengeQueue.poll()
-                    val challenge = challengeStorage.loadChallenge(
+
+                    logger.debug { "Received challenge: $msg" }
+                    val challenge = challengeStorage.readChallenge(
                         msg
                     )
+                    logger.debug { "Loaded challenge: $challenge" }
+                    val validation = validationService.validate(challenge)
 
-                    val schemaResponse = challenge.validate()
+                    if (validation.success.not()) {
+                        logger.error { "Failed to validate challenge: $validation" }
+                    } else {
+                        challengeStorage.addChallenge(challenge)
+                    }
 
                 } catch (t: Exception) {
                     logger.error(t) { "Failed to validate challenge" }
