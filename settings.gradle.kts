@@ -3,17 +3,17 @@ rootProject.name = "challenges-service"
 dependencyResolutionManagement {
   versionCatalogs {
     create("libs") {
-      version("kotlin", "2.1.10")
-      version("ktor", "3.1.0")
+      version("kotlin", "2.2.20")
+      version("ktor", "3.3.0")
 
       plugin("ktor", "io.ktor.plugin").versionRef("ktor")
       plugin("jvm", "org.jetbrains.kotlin.jvm").versionRef("kotlin")
-      plugin("openapi", "org.openapi.generator").version("7.11.0")
+      plugin("openapi", "org.openapi.generator").version("7.16.0")
       plugin("serialization", "org.jetbrains.kotlin.plugin.serialization").versionRef("kotlin")
-      plugin("ktorOpenapi", "io.github.tabilzad.inspektor").version("0.7.2-alpha")
+      plugin("ktorOpenapi", "io.github.tabilzad.inspektor").version("0.8.7-alpha")
 
-      version("coroutines", "1.10.1")
-      version("serialization", "1.8.0")
+      version("coroutines", "1.10.2")
+      version("serialization", "1.9.0")
 
       library(
         "kotlinx.serialization",
