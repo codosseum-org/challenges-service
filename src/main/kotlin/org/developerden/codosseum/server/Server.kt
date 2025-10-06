@@ -19,7 +19,7 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
 import org.developerden.codosseum.ChallengesService
 import org.developerden.codosseum.ServiceConfiguration
-import org.developerden.codosseum.indexing.indexChallenges
+import org.developerden.codosseum.challenges.indexing.indexChallenges
 import org.developerden.codosseum.serializers.UUIDSerializer
 import org.developerden.codosseum.serializers.ValidationErrorSerializer
 import org.developerden.codosseum.server.generated.sandkasten

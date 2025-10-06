@@ -1,8 +1,8 @@
-package org.developerden.codosseum.indexing
+package org.developerden.codosseum.challenges.indexing
 
 import org.developerden.codosseum.ChallengesService
 import org.developerden.codosseum.ServiceConfiguration
-import org.developerden.codosseum.indexing.git.RemoteIndexing
+import org.developerden.codosseum.challenges.indexing.git.RemoteIndexing
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.exists

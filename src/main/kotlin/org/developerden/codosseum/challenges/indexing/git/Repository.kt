@@ -1,4 +1,4 @@
-package org.developerden.codosseum.indexing.git
+package org.developerden.codosseum.challenges.indexing.git
 
 import kotlinx.serialization.Serializable
 

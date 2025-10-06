@@ -8,7 +8,7 @@ import io.ktor.http.*
 import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.developerden.codosseum.indexing.Challenge
+import org.developerden.codosseum.challenges.indexing.Challenge
 import org.developerden.codosseum.server.Challenges
 
 @GenerateOpenApi
@@ -21,6 +21,7 @@ fun Routing.randomChallenge() {
     ]
   )
   get<Challenges.Random> { route ->
+
     var challenges: Set<Challenge> = setOf()
     if (route.tagFilters.isNotEmpty()) {
       challenges =

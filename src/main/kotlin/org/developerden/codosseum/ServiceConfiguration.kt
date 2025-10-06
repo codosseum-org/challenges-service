@@ -1,7 +1,7 @@
 package org.developerden.codosseum
 
 import kotlinx.serialization.Serializable
-import org.developerden.codosseum.indexing.git.Repository
+import org.developerden.codosseum.challenges.indexing.git.Repository
 
 @Serializable
 data class ServiceConfiguration(

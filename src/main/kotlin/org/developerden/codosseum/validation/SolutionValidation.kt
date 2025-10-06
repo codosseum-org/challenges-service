@@ -8,10 +8,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import org.developerden.codosseum.ChallengesService
-import org.developerden.codosseum.indexing.Challenge
+import org.developerden.codosseum.challenges.indexing.Challenge
 import org.developerden.codosseum.sandkasten.api.apis.ProgramsApi
 import org.developerden.codosseum.sandkasten.api.models.BuildRequest
-import org.developerden.codosseum.sandkasten.api.models.BuildRequestMainFile
+import org.developerden.codosseum.sandkasten.api.models.MainFile
+
 import org.developerden.codosseum.sandkasten.api.models.RunRequest
 import org.developerden.codosseum.server.routes.event.EventBus
 import org.developerden.codosseum.server.routes.event.TestCompleteEvent
@@ -24,7 +25,7 @@ suspend fun Challenge.validateSolutions(
   val compiledSolution = api.compile(
     BuildRequest(
       info.solution.language,
-      BuildRequestMainFile(solutionFile.inputStream().readBytes().decodeToString())
+        MainFile(solutionFile.inputStream().readBytes().decodeToString())
     )
   ).body()
 

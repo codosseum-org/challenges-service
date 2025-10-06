@@ -1,6 +1,7 @@
-package org.developerden.codosseum.indexing.git
+package org.developerden.codosseum.challenges.indexing.git
 
-import org.developerden.codosseum.indexing.Indexing
+import org.developerden.codosseum.challenges.indexing.Indexing
+import org.developerden.codosseum.sandkasten.api.apis.ConfigurationApi
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider
 import java.nio.file.Path
@@ -8,7 +9,7 @@ import kotlin.io.path.Path
 import kotlin.io.path.createDirectory
 import kotlin.io.path.createParentDirectories
 import kotlin.io.path.notExists
-import org.developerden.codosseum.indexing.git.Repository as GitSource
+import org.developerden.codosseum.challenges.indexing.git.Repository as GitSource
 
 object RemoteIndexing : Indexing<GitSource>() {
 
@@ -31,7 +32,7 @@ object RemoteIndexing : Indexing<GitSource>() {
             .setDirectory(destination)
             .apply {
                 val password = System.getenv(source.accessTokenEnv)
-                if(password != null) {
+                if (password != null) {
                     setCredentialsProvider(
                         UsernamePasswordCredentialsProvider(
                             source.owner,
