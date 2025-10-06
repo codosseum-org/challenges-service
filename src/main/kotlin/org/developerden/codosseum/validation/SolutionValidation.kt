@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import org.developerden.codosseum.ChallengesService
-import org.developerden.codosseum.challenges.indexing.Challenge
+import org.developerden.codosseum.challenges.Challenge
 import org.developerden.codosseum.sandkasten.api.apis.ProgramsApi
 import org.developerden.codosseum.sandkasten.api.models.BuildRequest
 import org.developerden.codosseum.sandkasten.api.models.MainFile
