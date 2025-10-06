@@ -29,13 +29,17 @@ object RemoteIndexing : Indexing<GitSource>() {
             .setURI(source.url)
             .setBranch(source.branch)
             .setDirectory(destination)
-
-//            .setCredentialsProvider(
-//                UsernamePasswordCredentialsProvider(
-//                    source.owner,
-//                    System.getenv(source.accessTokenEnv) ?: throw IllegalStateException("No access token for repository '${source.name}' provided.")
-//                )
-//            )
+            .apply {
+                val password = System.getenv(source.accessTokenEnv)
+                if(password != null) {
+                    setCredentialsProvider(
+                        UsernamePasswordCredentialsProvider(
+                            source.owner,
+                            password
+                        )
+                    )
+                }
+            }
             .setProgressMonitor(GitProgressMonitor(source))
             .call()
 
