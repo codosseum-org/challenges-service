@@ -29,7 +29,7 @@ class ChallengeWorker(
                     val challenge = challengeStorage.readChallenge(
                         msg
                     )
-                    logger.debug { "Loaded challenge: $challenge" }
+                    logger.debug { "Loaded challenge: ${challenge.name}" }
                     val validation = validationService.validate(challenge)
 
                     if (validation.success.not()) {
