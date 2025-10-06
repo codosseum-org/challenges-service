@@ -20,11 +20,11 @@ import kotlinx.serialization.modules.contextual
 import org.developerden.codosseum.ChallengesService
 import org.developerden.codosseum.ServiceConfiguration
 import org.developerden.codosseum.challenges.indexing.indexChallenges
+import org.developerden.codosseum.challenges.storage.ChallengesStorage
 import org.developerden.codosseum.serializers.UUIDSerializer
 import org.developerden.codosseum.serializers.ValidationErrorSerializer
 import org.developerden.codosseum.server.generated.sandkasten
 import org.developerden.codosseum.server.generated.templatespiler
-import org.developerden.codosseum.server.koin.FixedKoin
 import org.developerden.codosseum.server.routes.challenges.randomChallenge
 import org.developerden.codosseum.server.routes.event.EventBus
 import org.developerden.codosseum.server.routes.event.events
@@ -32,6 +32,7 @@ import org.developerden.codosseum.server.routes.validation.validationSummary
 import org.developerden.codosseum.validation.SolutionValidationService
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
+import org.koin.ktor.plugin.Koin
 import java.nio.file.Paths
 import kotlin.io.path.inputStream
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientContentNegotiation
@@ -71,7 +72,7 @@ fun Application.server() {
     }
   }
 
-  install(FixedKoin) {
+  install(Koin) {
     modules(module {
       single { json }
 
@@ -93,6 +94,7 @@ fun Application.server() {
 
       singleOf(::EventBus)
       singleOf(::SolutionValidationService)
+        singleOf(::ChallengesStorage)
 
       single {
         HttpClient(CIO) {
