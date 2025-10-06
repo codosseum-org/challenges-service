@@ -1,5 +1,6 @@
 package org.developerden.codosseum.challenges.indexing.git
 
+import org.developerden.codosseum.challenges.indexing.ChallengeSourceID
 import org.developerden.codosseum.challenges.indexing.Indexing
 import org.developerden.codosseum.sandkasten.api.apis.ConfigurationApi
 import org.eclipse.jgit.api.Git
@@ -45,5 +46,13 @@ object RemoteIndexing : Indexing<GitSource>() {
             .call()
 
         return repositoryPath.resolve(Path("challenges"))
+    }
+
+    override fun getSource(source: GitSource): ChallengeSourceID {
+        return GithubChallengeSourceId(source)
+    }
+
+    class GithubChallengeSourceId(source: GitSource) : ChallengeSourceID {
+        override val id: String = "github:${source.owner}/${source.name}"
     }
 }

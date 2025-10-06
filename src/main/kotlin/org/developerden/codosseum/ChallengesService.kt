@@ -16,8 +16,6 @@ object ChallengesService {
     val coroutineContext: CoroutineContext
         get() = Dispatchers.Default + job
 
-    val indexed: MutableSet<Indexed> = mutableSetOf()
-
     @JvmStatic
     fun main(args: Array<String>) {
         EngineMain.main(args)

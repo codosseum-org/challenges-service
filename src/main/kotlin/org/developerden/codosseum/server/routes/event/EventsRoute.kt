@@ -10,8 +10,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.developerden.codosseum.server.Events
-import org.developerden.codosseum.server.koin.inject
+
 import org.developerden.codosseum.validation.FailedTest
+import org.koin.ktor.ext.inject
 
 interface Event<T : Event<T>> {
   val type: String
