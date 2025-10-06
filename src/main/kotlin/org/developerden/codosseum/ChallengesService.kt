@@ -9,14 +9,17 @@ import org.developerden.codosseum.indexing.Indexed
 import kotlin.coroutines.CoroutineContext
 
 object ChallengesService {
-  val logger: KLogger = KotlinLogging.logger("challenges-service")
+    val logger: KLogger = KotlinLogging.logger("challenges-service")
 
-  private val job: Job = Job()
+    private val job: Job = Job()
 
-  val coroutineContext: CoroutineContext
-    get() = Dispatchers.Default + job
+    val coroutineContext: CoroutineContext
+        get() = Dispatchers.Default + job
 
-  val indexed: MutableSet<Indexed> = mutableSetOf()
+    val indexed: MutableSet<Indexed> = mutableSetOf()
+
+    @JvmStatic
+    fun main(args: Array<String>) {
+        EngineMain.main(args)
+    }
 }
-
-fun main(args: Array<String>) = EngineMain.main(args)
