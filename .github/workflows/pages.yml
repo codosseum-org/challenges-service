@@ -10,6 +10,9 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -45,9 +48,10 @@ jobs:
             exit 1
           fi
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload artifact for Pages
+        uses: actions/upload-artifact@v4
         with:
+          name: pages-${{ github.run_id }}
           path: public
 
   deploy:
@@ -61,3 +65,5 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: pages-${{ github.run_id }}
