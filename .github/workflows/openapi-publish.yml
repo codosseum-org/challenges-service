@@ -1,0 +1,63 @@
+name: Publish OpenAPI to raw branch
+
+on:
+  push:
+    branches: [ main, development ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Generate OpenAPI file
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./gradlew build --no-daemon
+          test -f generated-openapi/openapi.yaml
+          cp generated-openapi/openapi.yaml /tmp/openapi.yaml
+
+      - name: Publish to `openapi` branch
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          git fetch origin openapi:openapi || true
+          if git rev-parse --verify openapi >/dev/null 2>&1; then
+            git switch openapi
+          else
+            git switch --orphan openapi
+          fi
+
+          # delete all files except .git directory
+          find . -mindepth 1 -maxdepth 1 ! -name ".git" -exec rm -rf {} +
+          
+          cp /tmp/openapi.yaml ./openapi.yaml
+
+          git add openapi.yaml
+          if git diff --staged --quiet; then
+            echo "No changes to publish."
+            exit 0
+          fi
+
+          git commit -m "Update OpenAPI spec [skip ci]"
+          git push origin openapi
