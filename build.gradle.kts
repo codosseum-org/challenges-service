@@ -121,5 +121,6 @@ swagger {
 
     pluginOptions {
         format = "yaml"
+        filePath = "$projectDir/generated-openapi"
     }
 }
