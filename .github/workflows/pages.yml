@@ -38,7 +38,7 @@ jobs:
           # Prepare publish directory
           mkdir -p public
           
-          cp generated-openapi/index.html public/index.html
+          cp generated-openapi/openapi.yaml public/openapi.yaml
 
           if [ ! -f public/openapi.yaml ]; then
             echo "OpenAPI YAML not found. Ensure the generation task writes to generated-openapi/openapi.yaml or one of the fallback locations." >&2
