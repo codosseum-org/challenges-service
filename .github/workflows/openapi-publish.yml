@@ -40,24 +40,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-
           git fetch origin openapi:openapi || true
           if git rev-parse --verify openapi >/dev/null 2>&1; then
             git switch openapi
           else
             git switch --orphan openapi
           fi
-
-          # delete all files except .git directory
           find . -mindepth 1 -maxdepth 1 ! -name ".git" -exec rm -rf {} +
-          
           cp /tmp/openapi.yaml ./openapi.yaml
+          
 
-          git add openapi.yaml
-          if git diff --staged --quiet; then
-            echo "No changes to publish."
-            exit 0
-          fi
-
-          git commit -m "Update OpenAPI spec [skip ci]"
-          git push origin openapi
+      - name: Commit and push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update OpenAPI spec [skip ci]"
+          branch: openapi
+          create_branch: true
+          file_pattern: openapi.yaml
