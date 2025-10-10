@@ -36,7 +36,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Info"
+                $ref: "#/components/schemas/ChallengeInfo"
         "404":
           description: "No challenges found with the given filters."
           content:
@@ -104,6 +104,52 @@ components:
       required:
         - "name"
         - "contact"
+    ChallengeInfo:
+      type: "object"
+      properties:
+        $schema:
+          type: "string"
+        author:
+          $ref: "#/components/schemas/Author"
+        license:
+          type: "string"
+        language:
+          type: "string"
+        title:
+          type: "string"
+        difficulty:
+          $ref: "#/components/schemas/Difficulty"
+        tags:
+          type: "array"
+          items:
+            type: "string"
+        text:
+          type: "string"
+        inputFormat:
+          type: "string"
+        examples:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Example"
+        publicTests:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Test"
+        solution:
+          $ref: "#/components/schemas/Solution"
+      required:
+        - "$schema"
+        - "author"
+        - "license"
+        - "language"
+        - "title"
+        - "difficulty"
+        - "tags"
+        - "text"
+        - "inputFormat"
+        - "examples"
+        - "publicTests"
+        - "solution"
     ChallengeSchemaValidationOutput:
       type: "object"
       properties:
@@ -164,52 +210,6 @@ components:
         - "testName"
         - "expectedOutput"
         - "actualOutput"
-    Info:
-      type: "object"
-      properties:
-        $schema:
-          type: "string"
-        author:
-          $ref: "#/components/schemas/Author"
-        license:
-          type: "string"
-        language:
-          type: "string"
-        title:
-          type: "string"
-        difficulty:
-          $ref: "#/components/schemas/Difficulty"
-        tags:
-          type: "array"
-          items:
-            type: "string"
-        text:
-          type: "string"
-        inputFormat:
-          type: "string"
-        examples:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/Example"
-        publicTests:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/Test"
-        solution:
-          $ref: "#/components/schemas/Solution"
-      required:
-        - "$schema"
-        - "author"
-        - "license"
-        - "language"
-        - "title"
-        - "difficulty"
-        - "tags"
-        - "text"
-        - "inputFormat"
-        - "examples"
-        - "publicTests"
-        - "solution"
     JsonPointer:
       type: "object"
     Solution:
