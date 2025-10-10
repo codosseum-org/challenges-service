@@ -26,10 +26,31 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Start Ktor and fetch OpenAPI
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./gradlew --no-daemon run &
+          APP_PID=$!
+          trap "kill $APP_PID" EXIT
+
+          echo "Waiting for OpenAPI endpoint..."
+          for i in {1..60}; do
+            if curl -fsS http://localhost:8080/openapi.yaml >/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+
+          curl -fsSL http://localhost:8080/openapi.yaml -o /tmp/openapi.yaml
+          test -s /tmp/openapi.yaml
+
       - name: Generate OpenAPI file
         shell: bash
         run: |
           set -euo pipefail
+          export TEMPLATESPILER_URL=dummy
+          export SANDKASTEN_URL=dummy
           ./gradlew build --no-daemon
           test -f generated-openapi/openapi.yaml
           cp generated-openapi/openapi.yaml /tmp/openapi.yaml
