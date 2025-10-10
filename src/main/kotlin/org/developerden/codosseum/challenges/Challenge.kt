@@ -30,6 +30,7 @@ data class Challenge(
 //  )
 
   @Serializable
+  @SerialName("ChallengeInfo")
   data class Info(
       @SerialName($$"$schema") val schema: String,
       val author: Author,
