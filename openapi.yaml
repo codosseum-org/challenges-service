@@ -1,345 +1,325 @@
----
 openapi: "3.1.0"
 info:
   title: "Codosseum Challenges Service"
   description: "Service used to index and validate challenges."
-  version: "0.0.1"
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:8080"
+    description: "Default Server"
+    variables: {}
 paths:
   /challenges/random:
     get:
-      summary: "Get a random challenge"
+      description: "Get a random challenge"
+      parameters:
+        - name: "difficultyFilters"
+          in: "query"
+          description: "Filter for challenge difficulties. A list of difficulties to _include_ in the search. If empty, all difficulties will be included."
+          required: false
+          allowReserved: false
+          schema:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/Difficulty"
+        - name: "tagFilters"
+          in: "query"
+          description: "Filter for challenge tags. A list of tags to _include_ in the search. If empty, all tags will be included."
+          required: false
+          allowReserved: false
+          schema:
+            type: "array"
+            items:
+              type: "string"
       responses:
         "200":
-          description: ""
+          description: "A random challenge meeting the filter criteria."
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/org.developerden.codosseum.challenges.Challenge.Info"
+                $ref: "#/components/schemas/Info"
         "404":
-          description: ""
+          description: "No challenges found with the given filters."
           content:
-            application/json:
+            text/plain:
               schema:
                 type: "string"
-      parameters:
-      - name: "difficultyFilters"
-        in: "query"
-        required: true
-        description: "Filter for challenge difficulties. A list of difficulties to\
-          \ _include_ in the search. If empty, all difficulties will be included."
-        schema:
-          type: "string"
-      - name: "tagFilters"
-        in: "query"
-        required: true
-        description: "Filter for challenge tags. A list of tags to _include_ in the\
-          \ search. If empty, all tags will be included."
-        schema:
-          type: "string"
   /events:
     get:
-      summary: "Subscribe to server sent events"
+      summary: "Subscribe to server-sent events"
+      description: "Subscribe to server-sent events."
+      responses:
+        "200":
+          description: "Events successfully subscribed to server-sent events."
+          content:
+            text/event-stream:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/TestCompleteEvent"
+                  - $ref: "#/components/schemas/Event"
   /validate/{title}:
     get:
       summary: "Validate a challenge"
+      description: "Validate a challenge by title."
+      parameters:
+        - name: "title"
+          in: "path"
+          description: "The title of the challenge to validate."
+          required: true
+          schema:
+            type: "string"
       responses:
         "200":
-          description: ""
+          description: "Validate successful"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/org.developerden.codosseum.validation.ChallengeValidationService.ValidationResult"
+                $ref: "#/components/schemas/ValidationResult"
         "404":
-          description: ""
+          description: "Challenge with the given title was not found."
           content:
             application/json:
               schema:
                 type: "string"
-      parameters:
-      - name: "title"
-        in: "path"
-        required: true
-        description: "Title of the challenge"
-        schema:
-          type: "string"
 components:
   schemas:
-    com.eygraber.uri.Uri:
+    AbsoluteLocation:
       type: "object"
       properties:
-        authority:
-          type: "string"
-        encodedAuthority:
-          type: "string"
-        encodedFragment:
-          type: "string"
-        encodedPath:
-          type: "string"
-        encodedQuery:
-          type: "string"
-        encodedSchemeSpecificPart:
-          type: "string"
-        encodedUserInfo:
-          type: "string"
-        fragment:
-          type: "string"
-        host:
-          type: "string"
-        isAbsolute:
-          type: "boolean"
-        isHierarchical:
-          type: "boolean"
-        isOpaque:
-          type: "boolean"
-        isRelative:
-          type: "boolean"
-        lastPathSegment:
-          type: "string"
+        uri:
+          $ref: "#/components/schemas/Uri"
         path:
+          $ref: "#/components/schemas/JsonPointer"
+      required:
+        - "uri"
+        - "path"
+    Author:
+      type: "object"
+      properties:
+        name:
           type: "string"
-        pathSegments:
+        contact:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Contact"
+      required:
+        - "name"
+        - "contact"
+    ChallengeSchemaValidationOutput:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+        errors:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/ValidationError"
+      required:
+        - "success"
+        - "errors"
+    Contact:
+      type: "object"
+      properties:
+        type:
+          type: "string"
+        contact:
+          type: "string"
+      required:
+        - "type"
+        - "contact"
+    Difficulty:
+      type: "string"
+      enum:
+        - "EASY"
+        - "MEDIUM"
+        - "HARD"
+    Event:
+      type: "object"
+      examples: []
+    Example:
+      type: "object"
+      properties:
+        in:
           type: "array"
           items:
             type: "string"
-        port:
-          type: "integer"
-        query:
-          type: "string"
-        scheme:
-          type: "string"
-        schemeSpecificPart:
-          type: "string"
-        userInfo:
-          type: "string"
-      required:
-      - "isHierarchical"
-      - "isRelative"
-      - "port"
-      - "pathSegments"
-    io.github.optimumcode.json.pointer.EmptyPointer:
-      type: "object"
-    io.github.optimumcode.json.pointer.JsonPointer:
-      type: "object"
-      oneOf:
-      - $ref: "#/components/schemas/io.github.optimumcode.json.pointer.EmptyPointer"
-      - $ref: "#/components/schemas/io.github.optimumcode.json.pointer.SegmentPointer"
-    io.github.optimumcode.json.pointer.SegmentPointer:
-      type: "object"
-      properties:
-        depth:
-          type: "integer"
-        index:
-          type: "integer"
-        propertyName:
-          type: "string"
-      required:
-      - "propertyName"
-    io.github.optimumcode.json.schema.AbsoluteLocation:
-      type: "object"
-      properties:
-        path:
-          $ref: "#/components/schemas/io.github.optimumcode.json.pointer.JsonPointer"
-        uri:
-          $ref: "#/components/schemas/com.eygraber.uri.Uri"
-      required:
-      - "uri"
-      - "path"
-    io.github.optimumcode.json.schema.ValidationError:
-      type: "object"
-      properties:
-        absoluteLocation:
-          $ref: "#/components/schemas/io.github.optimumcode.json.schema.AbsoluteLocation"
-        details:
-          type: "object"
-          additionalProperties:
+        out:
+          type: "array"
+          items:
             type: "string"
-        message:
-          type: "string"
-        objectPath:
-          $ref: "#/components/schemas/io.github.optimumcode.json.pointer.JsonPointer"
-        schemaPath:
-          $ref: "#/components/schemas/io.github.optimumcode.json.pointer.JsonPointer"
       required:
-      - "schemaPath"
-      - "objectPath"
-      - "message"
-    org.developerden.codosseum.challenges.Challenge.Info:
+        - "in"
+        - "out"
+    FailedTest:
+      type: "object"
+      properties:
+        testName:
+          type: "string"
+        expectedOutput:
+          type: "string"
+        actualOutput:
+          type: "string"
+        stderr:
+          type: "string"
+      required:
+        - "testName"
+        - "expectedOutput"
+        - "actualOutput"
+    Info:
       type: "object"
       properties:
         $schema:
           type: "string"
         author:
-          $ref: "#/components/schemas/org.developerden.codosseum.challenges.Challenge.Info.Author"
-        difficulty:
-          type: "string"
-          enum:
-          - "EASY"
-          - "MEDIUM"
-          - "HARD"
-        examples:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/org.developerden.codosseum.challenges.Challenge.Info.Example"
-        inputFormat:
+          $ref: "#/components/schemas/Author"
+        license:
           type: "string"
         language:
           type: "string"
-        license:
+        title:
           type: "string"
-        publicTests:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/org.developerden.codosseum.challenges.Challenge.Info.Test"
-        solution:
-          $ref: "#/components/schemas/org.developerden.codosseum.challenges.Challenge.Info.Solution"
+        difficulty:
+          $ref: "#/components/schemas/Difficulty"
         tags:
           type: "array"
           items:
             type: "string"
         text:
           type: "string"
-        title:
+        inputFormat:
           type: "string"
-      required:
-      - "$schema"
-      - "author"
-      - "license"
-      - "language"
-      - "title"
-      - "difficulty"
-      - "tags"
-      - "text"
-      - "inputFormat"
-      - "examples"
-      - "publicTests"
-      - "solution"
-    org.developerden.codosseum.challenges.Challenge.Info.Author:
-      type: "object"
-      properties:
-        contact:
+        examples:
           type: "array"
           items:
-            $ref: "#/components/schemas/org.developerden.codosseum.challenges.Challenge.Info.Author.Contact"
-        name:
-          type: "string"
-      required:
-      - "name"
-      - "contact"
-    org.developerden.codosseum.challenges.Challenge.Info.Author.Contact:
-      type: "object"
-      properties:
-        contact:
-          type: "string"
-        type:
-          type: "string"
-      required:
-      - "type"
-      - "contact"
-    org.developerden.codosseum.challenges.Challenge.Info.Example:
-      type: "object"
-      properties:
-        in:
+            $ref: "#/components/schemas/Example"
+        publicTests:
           type: "array"
           items:
-            type: "string"
-        out:
-          type: "array"
-          items:
-            type: "string"
+            $ref: "#/components/schemas/Test"
+        solution:
+          $ref: "#/components/schemas/Solution"
       required:
-      - "in"
-      - "out"
-    org.developerden.codosseum.challenges.Challenge.Info.Solution:
+        - "$schema"
+        - "author"
+        - "license"
+        - "language"
+        - "title"
+        - "difficulty"
+        - "tags"
+        - "text"
+        - "inputFormat"
+        - "examples"
+        - "publicTests"
+        - "solution"
+    JsonPointer:
+      type: "object"
+    Solution:
       type: "object"
       properties:
-        file:
-          type: "string"
         language:
           type: "string"
+        file:
+          type: "string"
       required:
-      - "language"
-      - "file"
-    org.developerden.codosseum.challenges.Challenge.Info.Test:
+        - "language"
+        - "file"
+    SolutionValidationResult:
       type: "object"
       properties:
+        challengeName:
+          type: "string"
+        success:
+          type: "boolean"
+        failedTests:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FailedTest"
+      required:
+        - "challengeName"
+        - "success"
+        - "failedTests"
+    TemplateValidationResult:
+      type: "object"
+      properties:
+        success:
+          type: "boolean"
+        errors:
+          type:
+            - "string"
+            - "null"
+      required:
+        - "success"
+        - "errors"
+    Test:
+      type: "object"
+      properties:
+        name:
+          type: "string"
         in:
           type: "array"
           items:
             type: "string"
-        name:
-          type: "string"
         out:
           type: "array"
           items:
             type: "string"
       required:
-      - "name"
-      - "in"
-      - "out"
-    org.developerden.codosseum.validation.ChallengeSchemaValidationOutput:
+        - "name"
+        - "in"
+        - "out"
+    TestCompleteEvent:
       type: "object"
       properties:
-        errors:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/io.github.optimumcode.json.schema.ValidationError"
+        challengeName:
+          type: "string"
+        testName:
+          type: "string"
         success:
           type: "boolean"
+        failedTest:
+          oneOf:
+            - $ref: "#/components/schemas/FailedTest"
+            - type: "null"
       required:
-      - "success"
-      - "errors"
-    org.developerden.codosseum.validation.ChallengeValidationService.ValidationResult:
+        - "challengeName"
+        - "testName"
+        - "success"
+        - "failedTest"
+    Uri:
+      type: "object"
+    ValidationError:
+      type: "object"
+      properties:
+        schemaPath:
+          $ref: "#/components/schemas/JsonPointer"
+        objectPath:
+          $ref: "#/components/schemas/JsonPointer"
+        message:
+          type: "string"
+        details:
+          type: "object"
+          additionalProperties:
+            type: "string"
+        absoluteLocation:
+          oneOf:
+            - $ref: "#/components/schemas/AbsoluteLocation"
+            - type: "null"
+      required:
+        - "schemaPath"
+        - "objectPath"
+        - "message"
+    ValidationResult:
       type: "object"
       properties:
         challengeName:
           type: "string"
         schemaValidation:
-          $ref: "#/components/schemas/org.developerden.codosseum.validation.ChallengeSchemaValidationOutput"
+          $ref: "#/components/schemas/ChallengeSchemaValidationOutput"
         solutionValidation:
-          $ref: "#/components/schemas/org.developerden.codosseum.validation.SolutionValidationResult"
+          $ref: "#/components/schemas/SolutionValidationResult"
         templateValidation:
-          $ref: "#/components/schemas/org.developerden.codosseum.validation.TemplateValidationResult"
+          $ref: "#/components/schemas/TemplateValidationResult"
       required:
-      - "challengeName"
-      - "schemaValidation"
-      - "solutionValidation"
-      - "templateValidation"
-    org.developerden.codosseum.validation.FailedTest:
-      type: "object"
-      properties:
-        actualOutput:
-          type: "string"
-        expectedOutput:
-          type: "string"
-        stderr:
-          type: "string"
-        testName:
-          type: "string"
-      required:
-      - "testName"
-      - "expectedOutput"
-      - "actualOutput"
-    org.developerden.codosseum.validation.SolutionValidationResult:
-      type: "object"
-      properties:
-        challengeName:
-          type: "string"
-        failedTests:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/org.developerden.codosseum.validation.FailedTest"
-        success:
-          type: "boolean"
-      required:
-      - "challengeName"
-      - "success"
-      - "failedTests"
-    org.developerden.codosseum.validation.TemplateValidationResult:
-      type: "object"
-      properties:
-        errors:
-          type: "string"
-        success:
-          type: "boolean"
-      required:
-      - "success"
+        - "challengeName"
+        - "schemaValidation"
+        - "solutionValidation"
+        - "templateValidation"
