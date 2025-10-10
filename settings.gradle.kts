@@ -10,7 +10,6 @@ dependencyResolutionManagement {
             plugin("jvm", "org.jetbrains.kotlin.jvm").versionRef("kotlin")
             plugin("openapi", "org.openapi.generator").version("7.16.0")
             plugin("serialization", "org.jetbrains.kotlin.plugin.serialization").versionRef("kotlin")
-            plugin("ktorOpenapi", "io.github.tabilzad.inspektor").version("0.8.7-alpha")
 
             version("coroutines", "1.10.2")
             version("serialization", "1.9.0")
@@ -109,6 +108,7 @@ dependencyResolutionManagement {
                 listOf("jackson-db", "jackson-core", "jackson-annotations", "jackson-yaml", "jackson-kotlin")
             )
 
+            library("kopapi", "io.github.perracodex", "kopapi").version("1.0.15")
         }
     }
 }

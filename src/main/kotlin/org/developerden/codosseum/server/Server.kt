@@ -1,5 +1,6 @@
 package org.developerden.codosseum.server
 
+import io.github.perracodex.kopapi.plugin.Kopapi
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.logging.*
@@ -14,7 +15,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.Json.Default.configuration
 import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
@@ -57,6 +57,24 @@ fun Application.server() {
         })
     }
 
+    install(plugin = Kopapi) {
+        enabled = true
+
+        apiDocs {
+            openApiUrl = "/openapi.yaml"
+
+            swagger {
+                url = "/swagger-ui"
+            }
+        }
+
+        info {
+            title = "Codosseum Challenges Service"
+            description = "Service used to index and validate challenges."
+        }
+    }
+
+
     install(ServerContentNegotiation) {
         json(json)
     }
@@ -74,8 +92,8 @@ fun Application.server() {
         validationSummary()
         randomChallenge()
         events()
-        swaggerUI("swagger", "openapi/openapi.yaml") {
-            version = "5.17.14"
+        swaggerUI("swagger", "openapi/generated.json") {
+            version = "5.29.3"
         }
     }
 

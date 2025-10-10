@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.ktor)
     alias(libs.plugins.serialization)
     alias(libs.plugins.openapi)
-    alias(libs.plugins.ktorOpenapi)
     checkstyle
 }
 
@@ -32,6 +31,7 @@ dependencies {
     implementation(libs.bundles.logging)
     implementation(libs.bundles.kotlinx)
     implementation(libs.bundles.jackson)
+    implementation(libs.kopapi)
 
     testImplementation(kotlin("test"))
 }
@@ -96,31 +96,12 @@ tasks.compileKotlin {
     dependsOn(generateSandkasten, generateTemplatespiler)
 }
 
+
 sourceSets {
     main {
         kotlin {
             srcDirs("${generateSandkasten.get().outputDir.get()}/src/main/kotlin")
             srcDirs("${generateTemplatespiler.get().outputDir.get()}/src/main/kotlin")
         }
-    }
-}
-
-swagger {
-    documentation {
-        generateRequestSchemas = true
-        hideTransientFields = true
-        hidePrivateAndInternalFields = true
-        deriveFieldRequirementFromTypeNullability = true
-
-        info {
-            title = "Codosseum Challenges Service"
-            description = "Service used to index and validate challenges."
-            version = project.version.toString()
-        }
-    }
-
-    pluginOptions {
-        format = "yaml"
-        filePath = "$projectDir/generated-openapi"
     }
 }
