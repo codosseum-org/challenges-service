@@ -6,7 +6,6 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
-import io.ktor.server.plugins.swagger.*
 import io.ktor.server.resources.*
 import io.ktor.server.routing.*
 import io.ktor.server.sse.*
@@ -92,9 +91,6 @@ fun Application.server() {
         validationSummary()
         randomChallenge()
         events()
-        swaggerUI("swagger", "openapi/generated.json") {
-            version = "5.29.3"
-        }
     }
 
     install(Koin) {
