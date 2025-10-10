@@ -51,6 +51,7 @@ jobs:
           set -euo pipefail
           export TEMPLATESPILER_URL=dummy
           export SANDKASTEN_URL=dummy
+          cp challenges-service.example.json challenges-service.json
           ./gradlew build --no-daemon
           test -f generated-openapi/openapi.yaml
           cp generated-openapi/openapi.yaml /tmp/openapi.yaml
