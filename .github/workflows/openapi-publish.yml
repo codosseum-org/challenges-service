@@ -30,6 +30,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          export TEMPLATESPILER_URL=dummy
+          export SANDKASTEN_URL=dummy
+          cp challenges-service.example.json challenges-service.json
           ./gradlew --no-daemon run &
           APP_PID=$!
           trap "kill $APP_PID" EXIT
@@ -44,17 +47,6 @@ jobs:
 
           curl -fsSL http://localhost:8080/openapi.yaml -o /tmp/openapi.yaml
           test -s /tmp/openapi.yaml
-
-      - name: Generate OpenAPI file
-        shell: bash
-        run: |
-          set -euo pipefail
-          export TEMPLATESPILER_URL=dummy
-          export SANDKASTEN_URL=dummy
-          cp challenges-service.example.json challenges-service.json
-          ./gradlew build --no-daemon
-          test -f generated-openapi/openapi.yaml
-          cp generated-openapi/openapi.yaml /tmp/openapi.yaml
 
       - name: Publish to `openapi` branch
         shell: bash
