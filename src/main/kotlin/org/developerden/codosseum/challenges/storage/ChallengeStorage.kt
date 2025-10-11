@@ -40,8 +40,8 @@ class ChallengeStorage(val json: Json) {
     }
 
     fun addChallenge(challenge: Challenge) {
-        logger.info { "Adding Challenge '${challenge.name}'" }
         challenges[challenge.name] = challenge
+        logger.info { "Added Challenge '${challenge.name}'" }
     }
 
     fun getAllChallenges() = challenges.values.toSet()
