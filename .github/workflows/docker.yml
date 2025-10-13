@@ -1,0 +1,51 @@
+name: Build and push docker image
+on:
+  push:
+    branches: [ main, development ]
+
+jobs:
+  push:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v5
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Build container image (Ktor/Jib)
+        run: ./gradlew --no-daemon buildImage
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata (tags, labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=sha
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+
+      - name: Load, tag and push
+        run: |
+          LOCAL_IMAGE=$(docker load -i build/jib-image.tar | awk '/Loaded image:/ {print $3; exit}')
+          for tag in ${{ steps.meta.outputs.tags }}; do
+            docker tag "$LOCAL_IMAGE" "$tag"
+            docker push "$tag"
+          done
